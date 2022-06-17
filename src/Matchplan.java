@@ -54,12 +54,20 @@ public class Matchplan {
 			}
 
 		} else if (teams.size() == 8) {
-			ArrayList<Match> tmp = group4(subList(teams, 0, 4), 1);
 			ArrayList<Match> res2;
-			res2 = group4(subList(teams, 4, 8), numberOfFields);
-			for(int i = 0; i< res2.size(); i++) {
+			ArrayList<Match> tmp;
+			if(numberOfFields == 2) {
+				tmp = group4mixed(subList(teams, 0, 4));
+				res2 = group4mixed(subList(teams, 4,8));
+			}else {
+				tmp = group4(subList(teams, 0, 4), 1);
+				res2 = group4(subList(teams, 4, 8), 1);
+			}
+			for(int i = 0; i< res2.size(); i+=2) {
 				res.add(tmp.get(i));
+				res.add(tmp.get(i+1));
 				res.add(res2.get(i));
+				res.add(res2.get(i+1));
 			}
 		} else if (teams.size() == 9) {
 			ArrayList<Match> tmp = group5(subList(teams, 0, 5), 1);
@@ -172,6 +180,17 @@ public class Matchplan {
 		res.add(new Match(teams.get(1), teams.get(2), field, Match.TYPE.GROUP));
 		res.add(new Match(teams.get(2), teams.get(0), field, Match.TYPE.GROUP));
 		res.add(new Match(teams.get(1), teams.get(3), field, Match.TYPE.GROUP));
+		return res;
+	}
+	
+	static ArrayList<Match> group4mixed(ArrayList<Team> teams) {
+		ArrayList<Match> res = new ArrayList<>();
+		res.add(new Match(teams.get(0), teams.get(1), 1, Match.TYPE.GROUP));
+		res.add(new Match(teams.get(2), teams.get(3), 2, Match.TYPE.GROUP));
+		res.add(new Match(teams.get(3), teams.get(0), 1, Match.TYPE.GROUP));
+		res.add(new Match(teams.get(1), teams.get(2), 2, Match.TYPE.GROUP));
+		res.add(new Match(teams.get(2), teams.get(0), 1, Match.TYPE.GROUP));
+		res.add(new Match(teams.get(1), teams.get(3), 2, Match.TYPE.GROUP));
 		return res;
 	}
 
