@@ -12,13 +12,13 @@ public class CorrectionFrame extends JFrame{
 		setVisible(true);
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setLayout(null);
-		setSize(600, 50 * (matches.size() + 1) + 50);
+		setSize(800, 50 * (matches.size() + 1) + 50);
 		for(int i = 0; i < matches.size(); i++) {
 			if(!matches.get(i).played()) {
 				continue;
 			}
 			JButton match = new JButton(matches.get(i).toString());
-			match.setBounds(50, 40*i+50, 400, 30);
+			match.setBounds(50, 40*i+50, 600, 30);
 			match.addActionListener(new ButtonListener(matches.get(i), mainFrame));
 			add(match);
 		}

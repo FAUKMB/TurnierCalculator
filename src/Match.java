@@ -1,5 +1,6 @@
 public class Match {
 	private static int idcounter = 0;
+	private static int maxTypeLen = 11;
 	private Team t1;
 	private Team t2;
 	private int goalT1 = -1;
@@ -7,6 +8,7 @@ public class Match {
 	private int field;
 	private TYPE type;
 	private int id;
+	private String groupname;
 	enum TYPE {
 		SEMIFINAL,
 		GROUP,
@@ -49,33 +51,53 @@ public class Match {
 	}
 
 	public Match(Team t1, Team t2, int field, TYPE type) {
+		this(t1, t2, field, type, null);
+	}
+	
+	public Match(Team t1, Team t2, TYPE type, String groupname) {
+		this(t1, t2, 1, type, groupname);
+	}
+	
+	public Match(Team t1, Team t2, int field, TYPE type, String groupname) {
 		this.setT1(t1);
 		this.setT2(t2);
 		this.field = field;
 		this.type = type;
 		id = idcounter++;
+		this.groupname = groupname;
 	}
 	
 	public int getId() {
 		return id;
 	}
-
+	
+	private String alignMaxNameLen(String s) {
+		String ret = s;
+		for(int i = s.length(); i < Turnier.maxNameLen; i++) {
+			s += " ";
+		}
+		return ret;
+	}
 	public String toString() {
+		String typeS = getType();
+		for(int i = typeS.length(); i < maxTypeLen; i++) {
+			typeS += " ";
+		}
 		if(goalT1 == -1) {
 			if(getT1() == null) {
 				if(type == TYPE.FINAL) {
-					return getType() + " Feld " + field + " Sieger hf1\t\t\t - \tSieger hf2";
+					return typeS + " Feld " + field + " " + alignMaxNameLen("Sieger hf1") + " - " + alignMaxNameLen("Sieger hf2");
 				}else {
-					return getType() + " Feld " + field +  " Verlierer hf1\t\t\t - \tVerlierer hf2";
+					return typeS + " Feld " + field + " " + alignMaxNameLen("Verlierer hf1") + " - " + alignMaxNameLen("Verlierer hf2");
 				}
 			}
-			return getType() + " Feld " +  field + " " + getT1().getNamePrint() + " - \t" + getT2().getNamePrint();
+			return typeS + "  Feld " +  field + " " + getT1().getNamePrint() + " - " + getT2().getNamePrint();
 		} else {
-			return getType() + " Feld " +  field + " " + getT1().getNamePrint() + " - \t" + getT2().getNamePrint() + " " + goalT1 + " : " + goalT2;
+			return typeS + "  Feld " +  field + " " + getT1().getNamePrint() + " - " + getT2().getNamePrint() + "   " + goalT1 + " : " + goalT2;
 		}
 	}
 
-	public String printNextGame() {
+	public String showFrame() {
 		if(getT1() == null) {
 			if(type == TYPE.FINAL) {
 				return "Sieger hf1 - Sieger hf2";
@@ -121,24 +143,28 @@ public class Match {
 	}
 
 	public String getType() {
+		String ret = "";
 		if(type == TYPE.GROUP) {
-			return "Gruppenspiel\t\t";
+			ret = "Gruppe";
+			if(groupname != null) {
+				ret += " " + groupname;
+			}
 		}else if(type == TYPE.SEMIFINAL) {
-			return "Halbfinale\t\t";
+			ret = "Halbfinale";
 		}else if(type == TYPE.GROUP_PLACEMENT){
-			return "Platzierungsspiel\t";
+			ret = "Platzierung";
 		}else if(type == TYPE.FINAL){
-			return "Finale\t\t\t";
+			ret = "Finale";
 		}else if(type == TYPE.THIRD) {
-			return "Spiel um Platz 3\t";
+			ret = "Platz 3";
 		}else if(type == TYPE.PLACEMENT) {
 			if(getT1() != null && getT1().getPosition() != 0) {
-				return "Spiel um Platz " + getT1().getPosition()+"\t";
+				ret = "Platz " + getT1().getPosition();
 			}else {
-				return "Platzierungsspiel\t";
+				ret = "Platzierung";
 			}
 		}
-		return null;
+		return ret;
 	}
 
 	public boolean isSemi() {
@@ -162,7 +188,7 @@ public class Match {
 	}
 
 	public boolean isKO() {
-		return type == TYPE.PLACEMENT || type == TYPE.SEMIFINAL;
+		return type == TYPE.PLACEMENT || type == TYPE.SEMIFINAL || type == TYPE.FINAL || type == TYPE.THIRD;
 	}
 
 	public TYPE getTYPE() {

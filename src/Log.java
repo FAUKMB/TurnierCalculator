@@ -51,7 +51,11 @@ public class Log {
 		s.nextLine();
 		ArrayList<Team> teams = new ArrayList<>();
 		for(int i = 0; i < numberOfTeams; i++) {
-			teams.add(new Team(s.nextLine()));
+			String teamname = s.nextLine();
+			if(teamname.length() > Turnier.maxNameLen) {
+				Turnier.maxNameLen = teamname.length();
+			}
+			teams.add(new Team(teamname));
 		}
 		ArrayList<Match> matches = Matchplan.loadGroupstage(numberOfFields,  teams,  option);
 		new MainFrame(matches, teams, semi, numberOfFields,  name, numberOfTeams >= 6 && option != 3, this);

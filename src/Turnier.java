@@ -24,6 +24,7 @@ import javax.swing.*;
 //main class to start up the process
 
 public class Turnier {
+	public static int maxNameLen = 0;
 
 	public static void main(String args[]){
 		int numberOfTeams;
@@ -87,6 +88,9 @@ public class Turnier {
 			String s = JOptionPane.showInputDialog("Mannschaft " + (i+1) + " eingeben:");
 			if(s == null) {
 				return;
+			}
+			if(s.length() > maxNameLen) {
+				maxNameLen = s.length();
 			}
 			teams.add(new Team(s));
 		}

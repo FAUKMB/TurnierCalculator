@@ -16,7 +16,12 @@ public class MatchplanFrame extends JFrame{
 		setLayout(null);
 		setSize(700, 50 * (matches.size() + 1) + 50);
 		for(int i = 0; i < matches.size(); i++) {
-			JLabel match = new JLabel(matches.get(i).toString());
+			Match m = matches.get(i);
+			String matchS = m.getType() + "  Feld " + m.getField() + "  " + m.showFrame();
+			if(m.played()) {
+				matchS += "   " + m.getGoal1() + " : " + m.getGoal2();
+			}
+			JLabel match = new JLabel(matchS);
 			match.setBounds(50, 30*i+50, 700, 40);
 			add(match);
 		}

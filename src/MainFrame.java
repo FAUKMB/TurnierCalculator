@@ -65,11 +65,11 @@ public class MainFrame extends JFrame{
 		if(cur != null) {
 			
 			if(field == 1) {
-				curGame1.setText("Aktuelle Partie Feld 1 (" + cur.getType() + "): " + cur.printNextGame());
+				curGame1.setText("Aktuelle Partie Feld 1 (" + cur.getType() + "): " + cur.showFrame());
 				curMatch1 = cur;
 			}else {
 				curMatch2 = cur;
-				curGame2.setText("Aktuelle Partie Feld 2 (" + cur.getType() + "): " + cur.printNextGame());
+				curGame2.setText("Aktuelle Partie Feld 2 (" + cur.getType() + "): " + cur.showFrame());
 			}
 		}else {
 			if(field == 1) {
@@ -82,9 +82,9 @@ public class MainFrame extends JFrame{
 		}
 		if(next != null) {
 			if(field == 1) {
-				nextGame1.setText("Naechste Partie Feld 1 ("+ next.getType() + "): " + next.printNextGame());
+				nextGame1.setText("Naechste Partie Feld 1 ("+ next.getType() + "): " + next.showFrame());
 			}else {
-				nextGame2.setText("Naechste Partie Feld 2 ("+ next.getType() + "): " + next.printNextGame());
+				nextGame2.setText("Naechste Partie Feld 2 ("+ next.getType() + "): " + next.showFrame());
 			}
 		}else {
 			if(field == 1) {
@@ -123,23 +123,23 @@ public class MainFrame extends JFrame{
 			add(referee);
 		}
 		curGame1 = new JLabel("Aktuelle Partie Feld 1: Ungenutzt");
-		curGame1.setBounds(50, 100, 800, 30);
+		curGame1.setBounds(50, 100, 1200, 30);
 		curGame1.setFont(normalFont);
 		add(curGame1);
 
 		nextGame1 = new JLabel("Naechste Partie Feld 1: Ungenutzt");
-		nextGame1.setBounds(50, 150, 800, 30);
+		nextGame1.setBounds(50, 150, 1200, 30);
 		nextGame1.setFont(normalFont);
 		add(nextGame1);
 		
 		if(fields == 2) {
 			curGame2 = new JLabel("Aktuelle Partie Feld 2: Ungenutzt");
-			curGame2.setBounds(50, 250, 800, 30);
+			curGame2.setBounds(50, 250, 1200, 30);
 			curGame2.setFont(normalFont);
 			add(curGame2);
 
 			nextGame2 = new JLabel("Naechste Partie Feld 2: Ungenutzt");
-			nextGame2.setBounds(50, 300, 800, 30);
+			nextGame2.setBounds(50, 300, 1200, 30);
 			nextGame2.setFont(normalFont);
 			add(nextGame2);
 		}
@@ -372,9 +372,6 @@ public class MainFrame extends JFrame{
 			}else if( d== 1){
 				new TableFrame(groupphase, Matchplan.subList(teams, (teams.size()+1)/2, teams.size()), name + " Gruppe B", true);
 			}else if(d == 2){
-				for(int i = 0; i< teams.size(); i++) {
-					System.out.println(teams.get(i).toString() + "   " + teams.get(i).getPosition());
-				}
 				new TableFrame(matches, teams, "Endstand " + name, false);
 			}
 		}else {

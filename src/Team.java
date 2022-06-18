@@ -48,13 +48,14 @@ public class Team{
 	//format to print in file with tabstop 8
 	public String toString(){
 		String ret = name;
-		for(int i = 0; i <= (36 - name.length())/8; i++){
-			ret += "\t";
+		for(int i = name.length(); i < Turnier.maxNameLen; i++) {
+			ret += " ";
 		}
+		ret += "   ";
 		if(goals < 10) {
 			ret += " ";
 		}
-		ret += goals + " : " + minusgoals + "\t" + points;
+		ret += goals + " : " + minusgoals + "   " + points;
 		return ret;
 	}
 
@@ -68,8 +69,8 @@ public class Team{
 	
 	public String getNamePrint() {
 		String ret = name;
-		for(int i = 0; i <= (32 - name.length())/8; i++){
-			ret += "\t";
+		for(int i = name.length(); i < Turnier.maxNameLen; i++) {
+			ret += " ";
 		}
 		return ret;
 	}

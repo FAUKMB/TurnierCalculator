@@ -26,21 +26,21 @@ public class Matchplan {
 			}
 			res.addAll(group5reverse(teams, numberOfFields));
 		} else if(teams.size() == 6) {
-			ArrayList<Match> tmp = group3(subList(teams, 0,3), 1, Match.TYPE.GROUP);
+			ArrayList<Match> tmp = group3(subList(teams, 0,3), 1, Match.TYPE.GROUP, "A");
 			ArrayList<Match> res2;
-			res2 = group3(subList(teams, 3, 6), numberOfFields, Match.TYPE.GROUP);
+			res2 = group3(subList(teams, 3, 6), numberOfFields, Match.TYPE.GROUP, "B");
 			for(int i = 0; i< tmp.size(); i++) {
 				res.add(tmp.get(i));
 				res.add(res2.get(i));
 			}
 		} else if(teams.size() == 7) {
 			if(option != 3) {
-				ArrayList<Match> tmp = group4(subList(teams, 0,4), 1);
+				ArrayList<Match> tmp = group4(subList(teams, 0,4), 1, "A");
 				ArrayList<Match> res2;
 
-				res2 = group3(subList(teams, 4, 7), numberOfFields, Match.TYPE.GROUP);
+				res2 = group3(subList(teams, 4, 7), numberOfFields, Match.TYPE.GROUP, "B");
 				if(option == 2) {
-					res2.addAll(group3reverse(subList(teams, 4, 7), numberOfFields));
+					res2.addAll(group3reverse(subList(teams, 4, 7), numberOfFields, "B"));
 				}
 				for(int i = 0; i< res2.size(); i++) {
 					res.add(tmp.get(i));
@@ -57,11 +57,11 @@ public class Matchplan {
 			ArrayList<Match> res2;
 			ArrayList<Match> tmp;
 			if(numberOfFields == 2) {
-				tmp = group4mixed(subList(teams, 0, 4));
-				res2 = group4mixed(subList(teams, 4,8));
+				tmp = group4mixed(subList(teams, 0, 4), "A");
+				res2 = group4mixed(subList(teams, 4,8), "B");
 			}else {
-				tmp = group4(subList(teams, 0, 4), 1);
-				res2 = group4(subList(teams, 4, 8), 1);
+				tmp = group4(subList(teams, 0, 4), 1, "A");
+				res2 = group4(subList(teams, 4, 8), 1, "B");
 			}
 			for(int i = 0; i< res2.size(); i+=2) {
 				res.add(tmp.get(i));
@@ -70,9 +70,9 @@ public class Matchplan {
 				res.add(res2.get(i+1));
 			}
 		} else if (teams.size() == 9) {
-			ArrayList<Match> tmp = group5(subList(teams, 0, 5), 1);
+			ArrayList<Match> tmp = group5(subList(teams, 0, 5), 1, "A");
 			ArrayList<Match> res2;
-			res2 = group4(subList(teams, 5, 9), numberOfFields);
+			res2 = group4(subList(teams, 5, 9), numberOfFields, "B");
 			for(int i = 0; i< res2.size(); i++) {
 				res.add(tmp.get(i));
 				res.add(res2.get(i));
@@ -81,9 +81,9 @@ public class Matchplan {
 				res.add(tmp.get(i));
 			}
 		} else {
-			ArrayList<Match> tmp = group5(subList(teams, 0, 5), 1);
+			ArrayList<Match> tmp = group5(subList(teams, 0, 5), 1, "A");
 			ArrayList<Match> res2;
-			res2 = group5(subList(teams, 5, 10), numberOfFields);
+			res2 = group5(subList(teams, 5, 10), numberOfFields, "B");
 			for(int i = 0; i< res2.size(); i++) {
 				res.add(tmp.get(i));
 				res.add(res2.get(i));
@@ -142,83 +142,105 @@ public class Matchplan {
 		return res;
 	}
 
-	static ArrayList<Match> group5(ArrayList<Team> teams, int field) {
+	static ArrayList<Match> group5(ArrayList<Team> teams, int field, String group) {
 		ArrayList<Match> res = new ArrayList<>();
-		res.add(new Match(teams.get(0), teams.get(1), field, Match.TYPE.GROUP));
-		res.add(new Match(teams.get(2), teams.get(3), field, Match.TYPE.GROUP));
-		res.add(new Match(teams.get(4), teams.get(0), field, Match.TYPE.GROUP));
-		res.add(new Match(teams.get(2), teams.get(1), field, Match.TYPE.GROUP));
-		res.add(new Match(teams.get(3), teams.get(4), field, Match.TYPE.GROUP));
-		res.add(new Match(teams.get(2), teams.get(0), field, Match.TYPE.GROUP));
-		res.add(new Match(teams.get(1), teams.get(3), field, Match.TYPE.GROUP));
-		res.add(new Match(teams.get(4), teams.get(2), field, Match.TYPE.GROUP));
-		res.add(new Match(teams.get(0), teams.get(3), field, Match.TYPE.GROUP));
-		res.add(new Match(teams.get(1), teams.get(4), field, Match.TYPE.GROUP));
+		res.add(new Match(teams.get(0), teams.get(1), field, Match.TYPE.GROUP, group));
+		res.add(new Match(teams.get(2), teams.get(3), field, Match.TYPE.GROUP, group));
+		res.add(new Match(teams.get(4), teams.get(0), field, Match.TYPE.GROUP, group));
+		res.add(new Match(teams.get(2), teams.get(1), field, Match.TYPE.GROUP, group));
+		res.add(new Match(teams.get(3), teams.get(4), field, Match.TYPE.GROUP, group));
+		res.add(new Match(teams.get(2), teams.get(0), field, Match.TYPE.GROUP, group));
+		res.add(new Match(teams.get(1), teams.get(3), field, Match.TYPE.GROUP, group));
+		res.add(new Match(teams.get(4), teams.get(2), field, Match.TYPE.GROUP, group));
+		res.add(new Match(teams.get(0), teams.get(3), field, Match.TYPE.GROUP, group));
+		res.add(new Match(teams.get(1), teams.get(4), field, Match.TYPE.GROUP, group));
 		return res;
+	}
+	static ArrayList<Match> group5(ArrayList<Team> teams, int field) {
+		return group5(teams, field, null);
 	}
 
 	static ArrayList<Match> group5reverse(ArrayList<Team> teams, int field) {
-		ArrayList<Match> res = new ArrayList<>();
-		res.add(new Match(teams.get(1), teams.get(0), field, Match.TYPE.GROUP));
-		res.add(new Match(teams.get(3), teams.get(2), field, Match.TYPE.GROUP));
-		res.add(new Match(teams.get(0), teams.get(4), field, Match.TYPE.GROUP));
-		res.add(new Match(teams.get(1), teams.get(2), field, Match.TYPE.GROUP));
-		res.add(new Match(teams.get(4), teams.get(3), field, Match.TYPE.GROUP));
-		res.add(new Match(teams.get(0), teams.get(2), field, Match.TYPE.GROUP));
-		res.add(new Match(teams.get(3), teams.get(1), field, Match.TYPE.GROUP));
-		res.add(new Match(teams.get(2), teams.get(4), field, Match.TYPE.GROUP));
-		res.add(new Match(teams.get(3), teams.get(0), field, Match.TYPE.GROUP));
-		res.add(new Match(teams.get(4), teams.get(1), field, Match.TYPE.GROUP));
-		return res;
+		return group5reverse(teams, field, null);
 	}
-
-	static ArrayList<Match> group4(ArrayList<Team> teams, int field) {
+	static ArrayList<Match> group5reverse(ArrayList<Team> teams, int field, String group) {
 		ArrayList<Match> res = new ArrayList<>();
-		res.add(new Match(teams.get(0), teams.get(1), field, Match.TYPE.GROUP));
-		res.add(new Match(teams.get(2), teams.get(3), field, Match.TYPE.GROUP));
-		res.add(new Match(teams.get(3), teams.get(0), field, Match.TYPE.GROUP));
-		res.add(new Match(teams.get(1), teams.get(2), field, Match.TYPE.GROUP));
-		res.add(new Match(teams.get(2), teams.get(0), field, Match.TYPE.GROUP));
-		res.add(new Match(teams.get(1), teams.get(3), field, Match.TYPE.GROUP));
+		res.add(new Match(teams.get(1), teams.get(0), field, Match.TYPE.GROUP, group));
+		res.add(new Match(teams.get(3), teams.get(2), field, Match.TYPE.GROUP, group));
+		res.add(new Match(teams.get(0), teams.get(4), field, Match.TYPE.GROUP, group));
+		res.add(new Match(teams.get(1), teams.get(2), field, Match.TYPE.GROUP, group));
+		res.add(new Match(teams.get(4), teams.get(3), field, Match.TYPE.GROUP, group));
+		res.add(new Match(teams.get(0), teams.get(2), field, Match.TYPE.GROUP, group));
+		res.add(new Match(teams.get(3), teams.get(1), field, Match.TYPE.GROUP, group));
+		res.add(new Match(teams.get(2), teams.get(4), field, Match.TYPE.GROUP, group));
+		res.add(new Match(teams.get(3), teams.get(0), field, Match.TYPE.GROUP, group));
+		res.add(new Match(teams.get(4), teams.get(1), field, Match.TYPE.GROUP, group));
 		return res;
 	}
 	
-	static ArrayList<Match> group4mixed(ArrayList<Team> teams) {
-		ArrayList<Match> res = new ArrayList<>();
-		res.add(new Match(teams.get(0), teams.get(1), 1, Match.TYPE.GROUP));
-		res.add(new Match(teams.get(2), teams.get(3), 2, Match.TYPE.GROUP));
-		res.add(new Match(teams.get(3), teams.get(0), 1, Match.TYPE.GROUP));
-		res.add(new Match(teams.get(1), teams.get(2), 2, Match.TYPE.GROUP));
-		res.add(new Match(teams.get(2), teams.get(0), 1, Match.TYPE.GROUP));
-		res.add(new Match(teams.get(1), teams.get(3), 2, Match.TYPE.GROUP));
-		return res;
+	static ArrayList<Match> group4(ArrayList<Team> teams, int field) {
+		return group4(teams, field, null);
 	}
 
-	static ArrayList<Match> group4reverse(ArrayList<Team> teams, int field) {
+	static ArrayList<Match> group4(ArrayList<Team> teams, int field, String group) {
 		ArrayList<Match> res = new ArrayList<>();
-		res.add(new Match(teams.get(1), teams.get(0), field, Match.TYPE.GROUP));
-		res.add(new Match(teams.get(3), teams.get(2), field, Match.TYPE.GROUP));
-		res.add(new Match(teams.get(0), teams.get(3), field, Match.TYPE.GROUP));
-		res.add(new Match(teams.get(2), teams.get(1), field, Match.TYPE.GROUP));
-		res.add(new Match(teams.get(0), teams.get(2), field, Match.TYPE.GROUP));
-		res.add(new Match(teams.get(3), teams.get(1), field, Match.TYPE.GROUP));
+		res.add(new Match(teams.get(0), teams.get(1), field, Match.TYPE.GROUP, group));
+		res.add(new Match(teams.get(2), teams.get(3), field, Match.TYPE.GROUP, group));
+		res.add(new Match(teams.get(3), teams.get(0), field, Match.TYPE.GROUP, group));
+		res.add(new Match(teams.get(1), teams.get(2), field, Match.TYPE.GROUP, group));
+		res.add(new Match(teams.get(2), teams.get(0), field, Match.TYPE.GROUP, group));
+		res.add(new Match(teams.get(1), teams.get(3), field, Match.TYPE.GROUP, group));
 		return res;
 	}
-
-	static ArrayList<Match> group3(ArrayList<Team> teams, int field, Match.TYPE type) {
+	
+	static ArrayList<Match> group4mixed(ArrayList<Team> teams, String group) {
 		ArrayList<Match> res = new ArrayList<>();
-		res.add(new Match(teams.get(0), teams.get(1), field, type));
-		res.add(new Match(teams.get(1), teams.get(2), field, type));
-		res.add(new Match(teams.get(2), teams.get(0), field, type));
+		res.add(new Match(teams.get(0), teams.get(1), 1, Match.TYPE.GROUP, group));
+		res.add(new Match(teams.get(2), teams.get(3), 2, Match.TYPE.GROUP, group));
+		res.add(new Match(teams.get(3), teams.get(0), 1, Match.TYPE.GROUP, group));
+		res.add(new Match(teams.get(1), teams.get(2), 2, Match.TYPE.GROUP, group));
+		res.add(new Match(teams.get(2), teams.get(0), 1, Match.TYPE.GROUP, group));
+		res.add(new Match(teams.get(1), teams.get(3), 2, Match.TYPE.GROUP, group));
+		return res;
+	}
+	
+	static ArrayList<Match> group4reverse(ArrayList<Team> teams, int field){
+		return group4reverse(teams, field, null);
+	}
+
+	static ArrayList<Match> group4reverse(ArrayList<Team> teams, int field, String group) {
+		ArrayList<Match> res = new ArrayList<>();
+		res.add(new Match(teams.get(1), teams.get(0), field, Match.TYPE.GROUP, group));
+		res.add(new Match(teams.get(3), teams.get(2), field, Match.TYPE.GROUP, group));
+		res.add(new Match(teams.get(0), teams.get(3), field, Match.TYPE.GROUP, group));
+		res.add(new Match(teams.get(2), teams.get(1), field, Match.TYPE.GROUP, group));
+		res.add(new Match(teams.get(0), teams.get(2), field, Match.TYPE.GROUP, group));
+		res.add(new Match(teams.get(3), teams.get(1), field, Match.TYPE.GROUP, group));
+		return res;
+	}
+	
+	static ArrayList<Match> group3(ArrayList<Team> teams, int field, Match.TYPE type){
+		return group3(teams, field, type, null);
+	}
+
+	static ArrayList<Match> group3(ArrayList<Team> teams, int field, Match.TYPE type, String group) {
+		ArrayList<Match> res = new ArrayList<>();
+		res.add(new Match(teams.get(0), teams.get(1), field, type, group));
+		res.add(new Match(teams.get(1), teams.get(2), field, type, group));
+		res.add(new Match(teams.get(2), teams.get(0), field, type, group));
+		return res;
+	}
+	
+	static ArrayList<Match> group3reverse(ArrayList<Team> teams, int field, String group) {
+		ArrayList<Match> res = new ArrayList<>();
+		res.add(new Match(teams.get(1), teams.get(0), field, Match.TYPE.GROUP, group));
+		res.add(new Match(teams.get(2), teams.get(1), field, Match.TYPE.GROUP, group));
+		res.add(new Match(teams.get(0), teams.get(2), field, Match.TYPE.GROUP, group));
 		return res;
 	}
 
 	static ArrayList<Match> group3reverse(ArrayList<Team> teams, int field) {
-		ArrayList<Match> res = new ArrayList<>();
-		res.add(new Match(teams.get(1), teams.get(0), field, Match.TYPE.GROUP));
-		res.add(new Match(teams.get(2), teams.get(1), field, Match.TYPE.GROUP));
-		res.add(new Match(teams.get(0), teams.get(2), field, Match.TYPE.GROUP));
-		return res;
+		return group3reverse(teams, field, null);
 	}
 
 	static ArrayList<Match> knockout(ArrayList<Team> groupA, ArrayList<Team> groupB, int numberFields, boolean semi) {
