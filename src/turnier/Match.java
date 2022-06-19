@@ -84,17 +84,28 @@ public class Match {
 		for(int i = typeS.length(); i < maxTypeLen; i++) {
 			typeS += " ";
 		}
+		String ret = typeS;
+		if(Turnier.numberOfFields == 2) {
+			ret += " ";
+			if(field == 1) {
+				ret += Turnier.fieldname1;
+			}else {
+				ret += Turnier.fieldname2;
+			}
+		}
 		if(goalT1 == -1) {
 			if(getT1() == null) {
 				if(type == TYPE.FINAL) {
-					return typeS + " Feld " + field + " " + alignMaxNameLen("Sieger hf1") + " - " + alignMaxNameLen("Sieger hf2");
+					return ret + " " + alignMaxNameLen("Sieger hf1") + " - " + alignMaxNameLen("Sieger hf2");
 				}else {
-					return typeS + " Feld " + field + " " + alignMaxNameLen("Verlierer hf1") + " - " + alignMaxNameLen("Verlierer hf2");
+					return ret + " " + alignMaxNameLen("Verlierer hf1") + " - " + alignMaxNameLen("Verlierer hf2");
 				}
 			}
-			return typeS + "  Feld " +  field + " " + getT1().getNamePrint() + " - " + getT2().getNamePrint();
+			ret += " " + getT1().getNamePrint() + " - " + getT2().getNamePrint();
+			return ret;
 		} else {
-			return typeS + "  Feld " +  field + " " + getT1().getNamePrint() + " - " + getT2().getNamePrint() + "   " + goalT1 + " : " + goalT2;
+			ret += " " + getT1().getNamePrint() + " - " + getT2().getNamePrint() + "   " + goalT1 + " : " + goalT2;
+			return ret;
 		}
 	}
 
@@ -133,6 +144,14 @@ public class Match {
 	public int getField() {
 		// TODO Auto-generated method stub
 		return field;
+	}
+	
+	public String getFieldname() {
+		if(field == 1) {
+			return Turnier.fieldname1;
+		}else {
+			return Turnier.fieldname2;
+		}
 	}
 	
 	public int getGoal1() {

@@ -66,32 +66,32 @@ public class MainFrame extends JFrame{
 		if(cur != null) {
 			
 			if(field == 1) {
-				curGame1.setText("Aktuelle Partie Feld 1 (" + cur.getType() + "): " + cur.showFrame());
+				curGame1.setText("Aktuelle Partie " + Turnier.fieldname1 + " (" + cur.getType() + "): " + cur.showFrame());
 				curMatch1 = cur;
 			}else {
 				curMatch2 = cur;
-				curGame2.setText("Aktuelle Partie Feld 2 (" + cur.getType() + "): " + cur.showFrame());
+				curGame2.setText("Aktuelle Partie " + Turnier.fieldname2 + " (" + cur.getType() + "): " + cur.showFrame());
 			}
 		}else {
 			if(field == 1) {
 				curMatch1= null;
-				curGame1.setText("Aktuelle Partie Feld 1: Pause...");
+				curGame1.setText("Aktuelle Partie " + Turnier.fieldname1 + ": Pause...");
 			}else {
 				curMatch2 = null;
-				curGame2.setText("Aktuelle Partie Feld 2: Pause...");
+				curGame2.setText("Aktuelle Partie " + Turnier.fieldname2 + "2: Pause...");
 			}
 		}
 		if(next != null) {
 			if(field == 1) {
-				nextGame1.setText("Naechste Partie Feld 1 ("+ next.getType() + "): " + next.showFrame());
+				nextGame1.setText("Naechste Partie " + Turnier.fieldname1 + " ("+ next.getType() + "): " + next.showFrame());
 			}else {
-				nextGame2.setText("Naechste Partie Feld 2 ("+ next.getType() + "): " + next.showFrame());
+				nextGame2.setText("Naechste Partie " + Turnier.fieldname2 + " ("+ next.getType() + "): " + next.showFrame());
 			}
 		}else {
 			if(field == 1) {
-				nextGame1.setText("Naechsete Partie Feld 1: Pause...");
+				nextGame1.setText("Naechsete Partie " + Turnier.fieldname1 + ": Pause...");
 			}else {
-				nextGame2.setText("Naechsete Partie Feld 2: Pause...");
+				nextGame2.setText("Naechsete Partie " + Turnier.fieldname2 + ": Pause...");
 			}
 		}
 	}
@@ -262,7 +262,7 @@ public class MainFrame extends JFrame{
 	}
 
 	private void correct() {
-		new CorrectionFrame(matches, this);
+		new CorrectionFrame(matches, this, log);
 	}
 	//Actions depending on button pressed
 	private void showMatchplan() {

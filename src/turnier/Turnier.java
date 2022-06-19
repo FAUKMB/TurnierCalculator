@@ -26,10 +26,12 @@ import javax.swing.*;
 
 public class Turnier {
 	public static int maxNameLen = 0;
+	public static int numberOfFields = 0;
+	public static String fieldname1;
+	public static String fieldname2;
 
 	public static void main(String args[]){
 		int numberOfTeams;
-		int numberOfFields;
 		boolean semi = false;
 		int option = 0;
 		String name;
@@ -59,6 +61,24 @@ public class Turnier {
 		if(numberOfFields != 1 && numberOfFields != 2) {
 			JOptionPane.showMessageDialog(null, "Es sind nur ein oder zwei Felder moeglich");
 			return;
+		}
+		fieldname1 = JOptionPane.showInputDialog("Feldname 1");
+		if(fieldname1 == null || fieldname1.length() > 6) {
+			JOptionPane.showMessageDialog(null, "Ungueltiger Feldname");
+			return;
+		}
+		for(int i = fieldname1.length(); i < 6; i++) {
+			fieldname1 += " ";
+		}
+		if(numberOfFields == 2) {
+			fieldname2 = JOptionPane.showInputDialog("Feldname 2");
+			if(fieldname2 == null || fieldname2.length() > 6) {
+				JOptionPane.showMessageDialog(null, "Ungueltiger Feldname");
+				return;
+			}
+			for(int i = fieldname2.length(); i < 6; i++) {
+				fieldname2 += " ";
+			}
 		}
 		if(numberOfTeams == 5) {
 			option = Dialog.optionDialog(new String[]{"round robin",  "doppel round robin"}, "Waehle Modus");

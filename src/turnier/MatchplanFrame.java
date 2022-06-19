@@ -18,7 +18,7 @@ public class MatchplanFrame extends JFrame{
 		setSize(700, 50 * (matches.size() + 1) + 50);
 		for(int i = 0; i < matches.size(); i++) {
 			Match m = matches.get(i);
-			String matchS = m.getType() + "  Feld " + m.getField() + "  " + m.showFrame();
+			String matchS = m.getType() + "  " + m.getFieldname() + "  " + m.showFrame();
 			if(m.played()) {
 				matchS += "   " + m.getGoal1() + " : " + m.getGoal2();
 			}

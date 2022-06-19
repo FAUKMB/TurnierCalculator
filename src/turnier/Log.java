@@ -11,6 +11,7 @@ public class Log {
 	private String filename;
 	boolean load = false;
 	private int numberOfTeams;
+	private int numberOfFields;
 	
 	public Log(String filename, boolean load) {
 		this.filename = filename;
@@ -24,6 +25,12 @@ public class Log {
 			bw.newLine();
 			bw.write(semi + " " + option + " " + numberOfFields + " " + teams.length);
 			bw.newLine();
+			bw.write(Turnier.fieldname1);
+			bw.newLine();
+			if(numberOfFields == 2) {
+				bw.write(Turnier.fieldname2);
+				bw.newLine();
+			}
 			for(int i = 0; i < teams.length; i++) {
 				bw.write(teams[i]);
 				bw.newLine();
@@ -47,9 +54,14 @@ public class Log {
 		name = s.nextLine();
 		boolean semi = s.nextBoolean();
 		int option = s.nextInt();
-		int numberOfFields = s.nextInt();
+		numberOfFields = s.nextInt();
+		Turnier.numberOfFields = numberOfFields;
 		numberOfTeams = s.nextInt();
 		s.nextLine();
+		Turnier.fieldname1 = s.nextLine();
+		if(numberOfFields == 2) {
+			Turnier.fieldname2 = s.nextLine();
+		}
 		ArrayList<Team> teams = new ArrayList<>();
 		for(int i = 0; i < numberOfTeams; i++) {
 			String teamname = s.nextLine();
@@ -71,17 +83,30 @@ public class Log {
 		Scanner s = null;
 		try {
 			s = new Scanner(new FileReader(filename));
-			s.nextLine();
-			s.nextLine();
+			System.out.println(s.nextLine());
+			System.out.println(s.nextLine());
+			System.out.println(s.nextLine());
+			if(numberOfFields == 2) {
+				System.out.println(s.nextLine());
+			}
 			for(int i = 0; i < numberOfTeams; i++) {
 				s.nextLine();
 			}
 			while(true) {
 				int id = s.nextInt();
+				System.out.println(id);
 				int g1 = s.nextInt();
 				int g2 = s.nextInt();
+				Match m = null;
 				if(id < matches.size()) {
-					matches.get(id).addResult(g1, g2);
+					for(int i = 0; i < matches.size(); i++) {
+						m = matches.get(i);
+						if(matches.get(i).getId() == id) {
+							break;
+						}
+						
+					}
+					m.addResult(g1, g2);
 				}
 			}
 		} catch (FileNotFoundException e) {

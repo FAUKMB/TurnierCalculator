@@ -9,7 +9,10 @@ import javax.swing.JOptionPane;
 
 
 public class CorrectionFrame extends JFrame{
-	public CorrectionFrame(ArrayList<Match> matches, MainFrame mainFrame) {
+	
+	private Log log;
+	public CorrectionFrame(ArrayList<Match> matches, MainFrame mainFrame, Log log) {
+		this.log = log;
 		setVisible(true);
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setLayout(null);
@@ -41,6 +44,7 @@ public class CorrectionFrame extends JFrame{
 			if(res != null) {
 				match.addResult(res[0], res[1]);
 				mainFrame.semidone();
+				log.logMatch(match);
 			}else {
 				JOptionPane.showMessageDialog(null, "Fehler. Ungueltiges Ergebnis");
 			}
