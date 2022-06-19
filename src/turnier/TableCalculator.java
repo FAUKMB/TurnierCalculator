@@ -11,7 +11,7 @@ public class TableCalculator {
 		}
 	}
 	
-	static void calcTable(ArrayList<Match> matches, ArrayList<Team> teams, boolean headToHead) {
+	public static void calcTable(ArrayList<Match> matches, ArrayList<Team> teams, boolean headToHead) {
 		doCalcTable(matches, teams, headToHead);
 		clear(teams);
 		for(int i = 0; i < matches.size(); i++) {

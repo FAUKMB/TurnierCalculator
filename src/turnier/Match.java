@@ -19,7 +19,7 @@ public class Match {
 		THIRD
 	}
 
-	void addResult(int t1, int t2) {
+	public void addResult(int t1, int t2) {
 		goalT1 = t1;
 		goalT2 = t2;
 		if(type == TYPE.SEMIFINAL) {

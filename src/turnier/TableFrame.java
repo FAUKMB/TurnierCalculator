@@ -62,7 +62,10 @@ public class TableFrame extends JFrame{
 			}
 
 			bw.close();
-		}catch(IOException e){
+			
+			Process p = Runtime.getRuntime().exec("python3 pdfconvert.py \"Tabelle" + header+ "\"");
+			p.waitFor();
+		}catch(Exception e){
 			System.err.println("Severe error occured during writing the file!! Exit the programm and check your hard disk or RAM!");
 		}
 	}

@@ -36,6 +36,8 @@ public class MatchplanFrame extends JFrame{
 				bw.newLine();
 			}
 			bw.close();
+			Process p = Runtime.getRuntime().exec("python3 pdfconvert.py \"Spielplan " + name + "\"");
+			p.waitFor();
 		}catch(Exception e) {
 			System.err.println("error writing file");
 		}
