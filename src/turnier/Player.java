@@ -1,3 +1,4 @@
+package turnier;
 
 //Player for the programm
 public class Player{

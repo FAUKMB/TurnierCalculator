@@ -1,3 +1,4 @@
+package turnier;
 public class Match {
 	private static int idcounter = 0;
 	private static int maxTypeLen = 11;

@@ -1,3 +1,4 @@
+package turnier;
 import java.util.ArrayList;
 
 public class Matchplan {
@@ -10,7 +11,7 @@ public class Matchplan {
 		return res;
 	}
 
-	static ArrayList<Match> loadGroupstage(int numberOfFields, ArrayList<Team> teams, int option){
+	public static ArrayList<Match> loadGroupstage(int numberOfFields, ArrayList<Team> teams, int option){
 		ArrayList<Match> res = new ArrayList<>();
 		if(teams.size() == 3) {
 			res = group3(teams, 1, Match.TYPE.GROUP);

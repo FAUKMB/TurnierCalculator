@@ -1,8 +1,9 @@
+package turnier;
 import java.util.ArrayList;
 
 public class TableCalculator {
 
-	static void clear(ArrayList<Team> teams) {
+	public static void clear(ArrayList<Team> teams) {
 		for(int i =0 ; i < teams.size(); i++) {
 			teams.get(i).setGoals(0);
 			teams.get(i).setMinusgoals(0);
