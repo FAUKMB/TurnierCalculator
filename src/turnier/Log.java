@@ -83,18 +83,17 @@ public class Log {
 		Scanner s = null;
 		try {
 			s = new Scanner(new FileReader(filename));
-			System.out.println(s.nextLine());
-			System.out.println(s.nextLine());
-			System.out.println(s.nextLine());
+			s.nextLine();
+			s.nextLine();
+			s.nextLine();
 			if(numberOfFields == 2) {
-				System.out.println(s.nextLine());
+				s.nextLine();
 			}
 			for(int i = 0; i < numberOfTeams; i++) {
 				s.nextLine();
 			}
 			while(true) {
 				int id = s.nextInt();
-				System.out.println(id);
 				int g1 = s.nextInt();
 				int g2 = s.nextInt();
 				Match m = null;
