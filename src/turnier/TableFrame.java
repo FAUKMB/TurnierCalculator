@@ -39,7 +39,7 @@ public class TableFrame extends JFrame{
 		JLabel[] lbPoints = new JLabel[teams.size()];
 		JLabel[] lbNum = new JLabel[teams.size()];
 		try{
-			BufferedWriter bw = new BufferedWriter(new FileWriter("Tabelle" + header + ".txt"));
+			BufferedWriter bw = new BufferedWriter(new FileWriter("Tabelle_" + header + ".txt"));
 			bw.write(head.getText());
 			bw.newLine();
 			bw.newLine();
@@ -63,7 +63,8 @@ public class TableFrame extends JFrame{
 
 			bw.close();
 			
-			Process p = Runtime.getRuntime().exec("python3 pdfconvert.py \"Tabelle" + header+ "\"");
+			//Process p = Runtime.getRuntime().exec("python3 pdfconvert.py \"Tabelle_" + header+ "\"");
+			Process p = Runtime.getRuntime().exec(new String[] {"python3", "pdfconvert.py", "Tabelle_" + header});
 			p.waitFor();
 		}catch(Exception e){
 			System.err.println("Severe error occured during writing the file!! Exit the programm and check your hard disk or RAM!");

@@ -8,13 +8,14 @@ import javax.swing.JLabel;
 
 public class MatchplanFrame extends JFrame{
 
-	private ArrayList<Match> matches;
 	public MatchplanFrame(ArrayList<Match> matches, String name) {
-		this.matches = matches;
 		
 		setVisible(true);
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setLayout(null);
+		JLabel head = new JLabel("Spielplan fuer " + name);
+		head.setBounds(50, 20, 700, 70);
+		add(head);
 		setSize(700, 50 * (matches.size() + 1) + 50);
 		for(int i = 0; i < matches.size(); i++) {
 			Match m = matches.get(i);
@@ -23,11 +24,11 @@ public class MatchplanFrame extends JFrame{
 				matchS += "   " + m.getGoal1() + " : " + m.getGoal2();
 			}
 			JLabel match = new JLabel(matchS);
-			match.setBounds(50, 30*i+50, 700, 40);
+			match.setBounds(50, 30*i+80, 700, 40);
 			add(match);
 		}
 		try {
-			BufferedWriter bw = new BufferedWriter(new FileWriter("Spielplan " + name + ".txt"));
+			BufferedWriter bw = new BufferedWriter(new FileWriter("Spielplan_" + name + ".txt"));
 			bw.write("Spielplan fuer " + name);
 			bw.newLine();
 			bw.newLine();
@@ -36,7 +37,7 @@ public class MatchplanFrame extends JFrame{
 				bw.newLine();
 			}
 			bw.close();
-			Process p = Runtime.getRuntime().exec("python3 pdfconvert.py \"Spielplan " + name + "\"");
+			Process p = Runtime.getRuntime().exec("python3 pdfconvert.py Spielplan_" + name);
 			p.waitFor();
 		}catch(Exception e) {
 			System.err.println("error writing file");

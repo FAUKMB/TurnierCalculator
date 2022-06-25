@@ -111,7 +111,7 @@ public class MainFrame extends JFrame{
 		
 		setSize(1350, 600);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setTitle("Turnier fuer " + teams.size() + " Mannschaften");
+		setTitle(name);
 		setResizable(true);
 		setLayout(null);
 
@@ -369,14 +369,14 @@ public class MainFrame extends JFrame{
 			String [] ops = {"Gruppe A", "Gruppe B", "Alle"};
 			d = JOptionPane.showOptionDialog(null, "Waehle Gruppe:", null, 0, JOptionPane.INFORMATION_MESSAGE, null, ops, null);
 			if(d == 0){
-				new TableFrame(groupphase, Matchplan.subList(teams, 0, (teams.size()+1)/2), name + " Gruppe A", true);
+				new TableFrame(groupphase, Matchplan.subList(teams, 0, (teams.size()+1)/2), name + "_Gruppe_A", true);
 			}else if( d== 1){
-				new TableFrame(groupphase, Matchplan.subList(teams, (teams.size()+1)/2, teams.size()), name + " Gruppe B", true);
+				new TableFrame(groupphase, Matchplan.subList(teams, (teams.size()+1)/2, teams.size()), name + "_Gruppe_B", true);
 			}else if(d == 2){
-				new TableFrame(matches, teams, "Endstand " + name, false);
+				new TableFrame(matches, teams, name + "_Endstand", false);
 			}
 		}else {
-			new TableFrame(matches, teams, name + " Tabelle", true);
+			new TableFrame(matches, teams, name, true);
 		}
 
 	}
