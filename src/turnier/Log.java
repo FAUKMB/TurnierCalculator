@@ -18,12 +18,12 @@ public class Log {
 		this.load = load;
 	}
 	
-	public void logInit(String name, boolean semi, String[] teams, int option, int numberOfFields) {
+	public void logInit(String name, boolean semi, String[] teams, int option, int numberOfFields, int starttimeh, int starttimem, int pausetime, int gametime) {
 		try {
 			BufferedWriter bw = new BufferedWriter(new FileWriter(filename));
 			bw.write(name);
 			bw.newLine();
-			bw.write(semi + " " + option + " " + numberOfFields + " " + teams.length);
+			bw.write(semi + " " + option + " " + numberOfFields + " " + teams.length + " " + starttimeh + " " + starttimem + " " + pausetime + " " + gametime);
 			bw.newLine();
 			bw.write(Turnier.fieldname1);
 			bw.newLine();
@@ -42,14 +42,13 @@ public class Log {
 		}
 	}
 	
-	public void load() {
+	public int load() {
 		String name;
 		Scanner s = null;
 		try {
 			s = new Scanner(new FileReader(filename));
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			return -1;
 		}
 		name = s.nextLine();
 		boolean semi = s.nextBoolean();
@@ -57,6 +56,10 @@ public class Log {
 		numberOfFields = s.nextInt();
 		Turnier.numberOfFields = numberOfFields;
 		numberOfTeams = s.nextInt();
+		int starttimeh = s.nextInt();
+		int starttimem = s.nextInt();
+		int pausetime = s.nextInt();
+		int gametime = s.nextInt();
 		s.nextLine();
 		Turnier.fieldname1 = s.nextLine();
 		if(numberOfFields == 2) {
@@ -71,8 +74,9 @@ public class Log {
 			teams.add(new Team(teamname));
 		}
 		ArrayList<Match> matches = Matchplan.loadGroupstage(numberOfFields,  teams,  option);
-		new MainFrame(matches, teams, semi, numberOfFields,  name, numberOfTeams >= 6 && option != 3, this);
+		new MainFrame(matches, teams, semi, numberOfFields,  name, starttimeh, starttimem, pausetime, gametime, numberOfTeams >= 6 && option != 3, this);
 		s.close();
+		return 0;
 	}
 
 	public boolean isLoad() {

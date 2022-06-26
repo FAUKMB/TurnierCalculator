@@ -29,6 +29,8 @@ public class MainFrame extends JFrame{
 	private JLabel nextGame1;
 	private JLabel curGame2;
 	private JLabel nextGame2;
+	private JLabel gametimeLabel;
+	private JLabel pausetimeLabel;
 	private boolean semi;
 	private boolean ref = false;
 	private ArrayList<Match> matches;
@@ -38,6 +40,10 @@ public class MainFrame extends JFrame{
 	private boolean is_knockout;
 	private String name;
 	private Log log;
+	private int starttimeh;
+	private int starttimem;
+	private int pausetime;
+	private int gametime;
 
 	private int fields;
 
@@ -98,7 +104,7 @@ public class MainFrame extends JFrame{
 
 
 	//Init Main menue
-	public MainFrame(ArrayList<Match> matches, ArrayList<Team> teams, boolean semi, int fields, String name, boolean is_knockout, Log log){
+	public MainFrame(ArrayList<Match> matches, ArrayList<Team> teams, boolean semi, int fields, String name, int starttimeh, int starttimem, int pausetime, int gametime, boolean is_knockout, Log log){
 		this.matches = matches;
 		groupphase = matches;
 		this.teams = teams;
@@ -107,9 +113,13 @@ public class MainFrame extends JFrame{
 		this.is_knockout = is_knockout;
 		this.name = name;
 		this.log = log;
+		this.starttimeh = starttimeh;
+		this.starttimem = starttimem;
+		this.gametime = gametime;
+		this.pausetime = pausetime;
 		//create frame
 		
-		setSize(1350, 600);
+		setSize(1450, 600);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setTitle(name);
 		setResizable(true);
@@ -186,7 +196,17 @@ public class MainFrame extends JFrame{
 		head.setBounds(150, 30, 900, 50);
 		head.setFont(haedFont);
 		add(head);
-
+		
+		gametimeLabel = new JLabel("Spielzeit: " + gametime + "min");
+		gametimeLabel.setBounds(1230, 50, 200, 50);
+		gametimeLabel.setFont(normalFont);
+		add(gametimeLabel);
+		
+		pausetimeLabel = new JLabel("Pause: " + pausetime + "min");
+		pausetimeLabel.setBounds(1230, 75, 200, 50);
+		pausetimeLabel.setFont(normalFont);
+		add(pausetimeLabel);
+		
 		insertTeam = new JButton("Spieler einfuegen");
 		insertTeam.setBounds(50, 400, 200, 50);
 		insertTeam.addActionListener(new ButtonListener());
@@ -271,7 +291,7 @@ public class MainFrame extends JFrame{
 		if(knockout != null) {
 			list.addAll(matches);
 		}
-		new MatchplanFrame(list, name);
+		new MatchplanFrame(list, name, gametime, pausetime, starttimeh, starttimem);
 	}
 	
 	public void semidone() {
@@ -299,7 +319,7 @@ public class MainFrame extends JFrame{
 	private void setEntry(){
 		int field = 0;
 		if(fields > 1) {
-			field = Dialog.optionDialog(new String[]{"1", "2"}, "Welches Feld ist fertig?");
+			field = Dialog.optionDialog(new String[]{Turnier.fieldname1, Turnier.fieldname2}, "Welches Feld ist fertig?");
 		}
 		field += 1;
 		if(field == 1 && curMatch1 != null) {

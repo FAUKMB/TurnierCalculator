@@ -39,7 +39,9 @@ public class Turnier {
 		String logfile = JOptionPane.showInputDialog("load from logfile?");
 		if(logfile != null) {
 			Log log = new Log(logfile, true);
-			log.load();
+			if(-1 == log.load()) {
+				JOptionPane.showMessageDialog(null, "logfile nicht gefunden");
+			}
 			return;
 		}
 
@@ -104,6 +106,18 @@ public class Turnier {
 				return;
 			}
 		}
+		int [] starttime = Dialog.timeDialog();
+		if(starttime == null) {
+			JOptionPane.showMessageDialog(null, "Ungueltige Zeit");
+		}
+		int gametime = Dialog.integerDialog("Spielzeit:");
+		if(gametime == -1) {
+			return;
+		}
+		int pausetime = Dialog.integerDialog("Pausenzeit:");
+		if(pausetime == -1) {
+			return;
+		}
 		ArrayList<Team> teams = new ArrayList<>();
 		for(int i = 0; i < numberOfTeams; i++) {
 			String s = JOptionPane.showInputDialog("Mannschaft " + (i+1) + " eingeben:");
@@ -121,8 +135,8 @@ public class Turnier {
 		for(int i = 0; i < teams.size(); i++) {
 			teamss[i] = teams.get(i).getName();
 		}
-		log.logInit(name, semi, teamss, option, numberOfFields);
+		log.logInit(name, semi, teamss, option, numberOfFields, starttime[0], starttime[1], pausetime, gametime);
 
-		new MainFrame(matches, teams , semi, numberOfFields, name, numberOfTeams >= 6 && option != 3, log);
+		new MainFrame(matches, teams , semi, numberOfFields, name, starttime[0], starttime[1], pausetime, gametime, numberOfTeams >= 6 && option != 3, log);
 	}
 }

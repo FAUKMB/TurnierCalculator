@@ -8,7 +8,7 @@ import javax.swing.JLabel;
 
 public class MatchplanFrame extends JFrame{
 
-	public MatchplanFrame(ArrayList<Match> matches, String name) {
+	public MatchplanFrame(ArrayList<Match> matches, String name, int gametime, int pausetime, int starttimeh, int starttimem) {
 		
 		setVisible(true);
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -30,6 +30,11 @@ public class MatchplanFrame extends JFrame{
 		try {
 			BufferedWriter bw = new BufferedWriter(new FileWriter("Spielplan_" + name + ".txt"));
 			bw.write("Spielplan fuer " + name);
+			bw.newLine();
+			bw.newLine();
+			bw.write("Startzeit: " + starttimeh + ":" + starttimem + "Uhr");
+			bw.newLine();
+			bw.write("Spielzeit: " + gametime + "min    " + "Pause: " + pausetime + "min");
 			bw.newLine();
 			bw.newLine();
 			for(int i = 0; i < matches.size(); i++) {

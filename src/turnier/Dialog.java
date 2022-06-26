@@ -57,4 +57,33 @@ public class Dialog {
 		}
 		return ret;
 	}
+	
+	static int[] timeDialog() {
+		int [] ret = new int[2];
+		JTextField xField = new JTextField(3);
+		JTextField yField = new JTextField(3);
+
+		JPanel myPanel = new JPanel();
+		myPanel.add(new JLabel("Startzeit: "));
+		myPanel.add(xField);
+		myPanel.add(new JLabel(":"));
+		myPanel.add(yField);
+
+		int result = JOptionPane.showConfirmDialog(null, myPanel, 
+				"Turnierstart angeben", JOptionPane.OK_CANCEL_OPTION);
+		if(result == JOptionPane.OK_OPTION) {
+			try {
+				ret[0] = Integer.parseInt(xField.getText());
+				ret[1] = Integer.parseInt(yField.getText());
+				if(ret[0] < 0 || ret[1] < 0) {
+					ret = null;
+				}
+			}catch(NumberFormatException e) {
+				ret = null;
+			}
+		}else {
+			ret = null;
+		}
+		return ret;
+	}
 }
