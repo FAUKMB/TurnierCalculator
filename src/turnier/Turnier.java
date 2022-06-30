@@ -90,6 +90,14 @@ public class Turnier {
 			}
 			option++;
 		}
+		if(numberOfTeams == 6) {
+			option = Dialog.optionDialog(new String[] {"round robin",  "2 gruppen"}, "Waehle Modus");
+			if(option != 0 && option != 1) {
+				JOptionPane.showMessageDialog(null, "Option muss gewaehlt werden");
+				return;
+			}
+			option++;
+		}
 		if(numberOfTeams == 7) {
 			option = Dialog.optionDialog(new String[]{"gruppe 3 round robin",  "gruppe 3 doppel round robin", "round robin"}, "Waehle Modus");
 			if(option != 0 && option != 1 && option != 2) {

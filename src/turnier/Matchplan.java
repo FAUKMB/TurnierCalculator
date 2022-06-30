@@ -24,6 +24,9 @@ public class Matchplan {
 				res = group4(teams, 1);
 				res.addAll(group4reverse(teams, 1));
 			}
+			Match first = res.get(0);
+			res.set(0, res.get(1));
+			res.set(1, first);
 		} else if(teams.size() == 5) {
 			if(numberOfFields == 2) {
 				res = group5mixed(teams);
@@ -36,21 +39,25 @@ public class Matchplan {
 					res.addAll(group5reverse(teams, numberOfFields));
 				}
 			}
-				
-			
+
+
 		} else if(teams.size() == 6) {
-			ArrayList<Match> tmp = group3(subList(teams, 0,3), 1, Match.TYPE.GROUP, "A");
-			ArrayList<Match> res2;
-			res2 = group3(subList(teams, 3, 6), numberOfFields, Match.TYPE.GROUP, "B");
-			for(int i = 0; i< tmp.size(); i++) {
-				res.add(tmp.get(i));
-				res.add(res2.get(i));
-			}
-			tmp = group3reverse(subList(teams, 0,3), 1, "A");
-			res2 = group3reverse(subList(teams, 3, 6), numberOfFields, "B");
-			for(int i = 0; i< tmp.size(); i++) {
-				res.add(tmp.get(i));
-				res.add(res2.get(i));
+			if(option == 1) {
+				res = group6(teams, numberOfFields, Match.TYPE.GROUP);
+			}else {
+				ArrayList<Match> tmp = group3(subList(teams, 0,3), 1, Match.TYPE.GROUP, "A");
+				ArrayList<Match> res2;
+				res2 = group3(subList(teams, 3, 6), numberOfFields, Match.TYPE.GROUP, "B");
+				for(int i = 0; i< tmp.size(); i++) {
+					res.add(tmp.get(i));
+					res.add(res2.get(i));
+				}
+				tmp = group3reverse(subList(teams, 0,3), 1, "A");
+				res2 = group3reverse(subList(teams, 3, 6), numberOfFields, "B");
+				for(int i = 0; i< tmp.size(); i++) {
+					res.add(tmp.get(i));
+					res.add(res2.get(i));
+				}
 			}
 		} else if(teams.size() == 7) {
 			if(option != 3) {
@@ -111,6 +118,44 @@ public class Matchplan {
 		return res;
 	}
 
+	private static ArrayList<Match> group6(ArrayList<Team> teams, int numberOfFields, Match.TYPE type) {
+		ArrayList<Match> res = new ArrayList<>();
+		if(numberOfFields == 2) {
+			res.add(new Match(teams.get(0), teams.get(1), res.size() % 2 + 1, type));
+			res.add(new Match(teams.get(2), teams.get(3), res.size() % 2 + 1, type));
+			res.add(new Match(teams.get(4), teams.get(0), res.size() % 2 + 1, type));
+			res.add(new Match(teams.get(5), teams.get(2), res.size() % 2 + 1, type));
+			res.add(new Match(teams.get(5), teams.get(1), res.size() % 2 + 1, type));
+			res.add(new Match(teams.get(3), teams.get(4), res.size() % 2 + 1, type));
+			res.add(new Match(teams.get(1), teams.get(2), res.size() % 2 + 1, type));
+			res.add(new Match(teams.get(3), teams.get(0), res.size() % 2 + 1, type));
+			res.add(new Match(teams.get(0), teams.get(5), res.size() % 2 + 1, type));
+			res.add(new Match(teams.get(2), teams.get(4), res.size() % 2 + 1, type));
+			res.add(new Match(teams.get(5), teams.get(3), res.size() % 2 + 1, type));
+			res.add(new Match(teams.get(4), teams.get(1), res.size() % 2 + 1, type));
+			res.add(new Match(teams.get(1), teams.get(3), res.size() % 2 + 1, type));
+			res.add(new Match(teams.get(0), teams.get(2), res.size() % 2 + 1, type));
+			res.add(new Match(teams.get(4), teams.get(5), res.size() % 2 + 1, type));
+		}else {
+			res.add(new Match(teams.get(0), teams.get(1), 1, type));
+			res.add(new Match(teams.get(2), teams.get(3), 1, type));
+			res.add(new Match(teams.get(4), teams.get(0), 1, type));
+			res.add(new Match(teams.get(5), teams.get(2), 1, type));
+			res.add(new Match(teams.get(5), teams.get(1), 1, type));
+			res.add(new Match(teams.get(3), teams.get(4), 1, type));
+			res.add(new Match(teams.get(1), teams.get(2), 1, type));
+			res.add(new Match(teams.get(3), teams.get(0), 1, type));
+			res.add(new Match(teams.get(0), teams.get(5), 1, type));
+			res.add(new Match(teams.get(2), teams.get(4), 1, type));
+			res.add(new Match(teams.get(5), teams.get(3), 1, type));
+			res.add(new Match(teams.get(4), teams.get(1), 1, type));
+			res.add(new Match(teams.get(1), teams.get(3), 1, type));
+			res.add(new Match(teams.get(0), teams.get(2), 1, type));
+			res.add(new Match(teams.get(4), teams.get(5), 1, type));
+		}
+		return res;
+	}
+
 	private static ArrayList<Match> group7(ArrayList<Team> teams, int numberOfFields, Match.TYPE type) {
 		ArrayList<Match> res = new ArrayList<>();
 		if(numberOfFields == 2) {
@@ -160,7 +205,7 @@ public class Matchplan {
 		}
 		return res;
 	}
-	
+
 	static ArrayList<Match> group5mixed(ArrayList<Team> teams) {
 		ArrayList<Match> res = new ArrayList<>();
 		res.add(new Match(teams.get(0), teams.get(1), 1, Match.TYPE.GROUP));
@@ -175,7 +220,7 @@ public class Matchplan {
 		res.add(new Match(teams.get(1), teams.get(4), 2, Match.TYPE.GROUP));
 		return res;
 	}
-	
+
 	static ArrayList<Match> group5mixedreverse(ArrayList<Team> teams) {
 		ArrayList<Match> res = new ArrayList<>();
 		res.add(new Match(teams.get(1), teams.get(0), 1, Match.TYPE.GROUP));
@@ -226,7 +271,7 @@ public class Matchplan {
 		res.add(new Match(teams.get(4), teams.get(1), field, Match.TYPE.GROUP, group));
 		return res;
 	}
-	
+
 	static ArrayList<Match> group4(ArrayList<Team> teams, int field) {
 		return group4(teams, field, null);
 	}
@@ -241,7 +286,7 @@ public class Matchplan {
 		res.add(new Match(teams.get(1), teams.get(3), field, Match.TYPE.GROUP, group));
 		return res;
 	}
-	
+
 	static ArrayList<Match> group4mixed(ArrayList<Team> teams, String group) {
 		ArrayList<Match> res = new ArrayList<>();
 		res.add(new Match(teams.get(0), teams.get(1), 1, Match.TYPE.GROUP, group));
@@ -262,7 +307,7 @@ public class Matchplan {
 		res.add(new Match(teams.get(3), teams.get(1), 2, Match.TYPE.GROUP, group));
 		return res;
 	}
-	
+
 	static ArrayList<Match> group4reverse(ArrayList<Team> teams, int field){
 		return group4reverse(teams, field, null);
 	}
@@ -277,7 +322,7 @@ public class Matchplan {
 		res.add(new Match(teams.get(3), teams.get(1), field, Match.TYPE.GROUP, group));
 		return res;
 	}
-	
+
 	static ArrayList<Match> group3(ArrayList<Team> teams, int field, Match.TYPE type){
 		return group3(teams, field, type, null);
 	}
@@ -289,7 +334,7 @@ public class Matchplan {
 		res.add(new Match(teams.get(2), teams.get(0), field, type, group));
 		return res;
 	}
-	
+
 	static ArrayList<Match> group3reverse(ArrayList<Team> teams, int field, String group) {
 		ArrayList<Match> res = new ArrayList<>();
 		res.add(new Match(teams.get(1), teams.get(0), field, Match.TYPE.GROUP, group));
@@ -387,7 +432,7 @@ public class Matchplan {
 
 		return res;
 	}
-	
+
 	static void setFinals(Team fin1, Team fin2, Team third1, Team third2, ArrayList<Match> matches) {
 		for(int i =0 ; i< matches.size(); i++) {
 			if(matches.get(i).getTYPE() == Match.TYPE.THIRD) {
@@ -399,5 +444,5 @@ public class Matchplan {
 			}
 		}
 	}
-		
+
 }
