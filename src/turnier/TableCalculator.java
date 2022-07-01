@@ -20,12 +20,11 @@ public class TableCalculator {
 		}
 	}
 	static void doCalcTable(ArrayList<Match> matches, ArrayList<Team> teams, boolean headToHead) {
-		ArrayList<Match> newMatches = new ArrayList<>();
+
 		clear(teams);
 		for(int i = 0;i < matches.size(); i++) {
 			Match m = matches.get(i);
 			if(teams.contains(m.getT1()) && teams.contains(m.getT2()) && m.played()) {
-				newMatches.add(m);
 				m.confirmResult();
 			}
 		}

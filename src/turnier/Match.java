@@ -110,7 +110,7 @@ public class Match {
 	}
 
 	public String showFrame() {
-		if(getT1() == null) {
+		if(getT1() == null || getT2() == null) {
 			if(type == TYPE.FINAL) {
 				return "Sieger hf1 - Sieger hf2";
 			}else {

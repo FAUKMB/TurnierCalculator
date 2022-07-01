@@ -437,7 +437,7 @@ public class Matchplan {
 		for(int i =0 ; i< matches.size(); i++) {
 			if(matches.get(i).getTYPE() == Match.TYPE.THIRD) {
 				matches.get(i).setT1(third1);
-				matches.get(i).setT1(third2);
+				matches.get(i).setT2(third2);
 			}else if (matches.get(i).getTYPE() == Match.TYPE.FINAL){
 				matches.get(i).setT1(fin1);
 				matches.get(i).setT2(fin2);
