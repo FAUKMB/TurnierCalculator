@@ -74,7 +74,17 @@ public class Log {
 			teams.add(new Team(teamname));
 		}
 		ArrayList<Match> matches = Matchplan.loadGroupstage(numberOfFields,  teams,  option);
-		new MainFrame(matches, teams, semi, numberOfFields,  name, starttimeh, starttimem, pausetime, gametime, numberOfTeams >= 6 && option != 3, this);
+		boolean is_knockout = true;
+		if(numberOfTeams == 7 && option == 3) {
+			is_knockout = false;
+		}
+		if(numberOfTeams < 6) {
+			is_knockout = false;
+		}
+		if(numberOfTeams == 6 && option == 1) {
+			is_knockout = false;
+		}
+		new MainFrame(matches, teams, semi, numberOfFields,  name, starttimeh, starttimem, pausetime, gametime, is_knockout, this);
 		s.close();
 		return 0;
 	}

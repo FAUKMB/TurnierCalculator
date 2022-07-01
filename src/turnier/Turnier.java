@@ -33,6 +33,7 @@ public class Turnier {
 	public static void main(String args[]){
 		int numberOfTeams;
 		boolean semi = false;
+		boolean is_knockout = true;
 		int option = 0;
 		String name;
 		
@@ -55,6 +56,9 @@ public class Turnier {
 		}
 		if(numberOfTeams < 3 || numberOfTeams > 10) {
 			JOptionPane.showMessageDialog(null, "Waehle 3-10 teams");
+		}
+		if(numberOfTeams < 6) {
+			is_knockout = false;
 		}
 		numberOfFields = Dialog.integerDialog("Anzahl der Spielfelder");
 		if(numberOfFields == -1) {
@@ -96,6 +100,9 @@ public class Turnier {
 				JOptionPane.showMessageDialog(null, "Option muss gewaehlt werden");
 				return;
 			}
+			if(option == 0) {
+				is_knockout = false;
+			}
 			option++;
 		}
 		if(numberOfTeams == 7) {
@@ -104,9 +111,12 @@ public class Turnier {
 				JOptionPane.showMessageDialog(null, "Option muss gewaehlt werden");
 				return;
 			}
+			if(option == 2) {
+				is_knockout = false;
+			}
 			option++;
 		}
-		if(numberOfTeams > 5 && option != 3) {
+		if(numberOfTeams > 5 && option != 3 && !(numberOfTeams == 6 && option == 1)) {
 			int ret = JOptionPane.showConfirmDialog(null, "Mit Halbfinale?");
 			if(ret == JOptionPane.YES_OPTION) {
 				semi = true;
@@ -145,6 +155,6 @@ public class Turnier {
 		}
 		log.logInit(name, semi, teamss, option, numberOfFields, starttime[0], starttime[1], pausetime, gametime);
 
-		new MainFrame(matches, teams , semi, numberOfFields, name, starttime[0], starttime[1], pausetime, gametime, numberOfTeams >= 6 && option != 3, log);
+		new MainFrame(matches, teams , semi, numberOfFields, name, starttime[0], starttime[1], pausetime, gametime, is_knockout, log);
 	}
 }
