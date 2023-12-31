@@ -1,4 +1,7 @@
-package turnier;
+package frames;
+import turnier.Player;
+import Util.PlayerComparator;
+
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;

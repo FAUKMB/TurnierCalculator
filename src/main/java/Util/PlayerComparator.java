@@ -1,4 +1,6 @@
-package turnier;
+package Util;
+
+import turnier.Player;
 
 import java.util.Comparator;
 

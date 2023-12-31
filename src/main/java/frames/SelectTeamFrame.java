@@ -1,4 +1,8 @@
-package turnier;
+package frames;
+
+import turnier.Player;
+
+import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedWriter;
@@ -6,25 +10,19 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
 
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JTextField;
-
 //Select team and put player on the list or print team into file(depends on flag)
 
-public class SelectTeamFrame extends JFrame{
+public class SelectTeamFrame extends JFrame {
 	private JButton[] buttons;
 	private List<Player> playerList;
 	private JTextField name;
 	private JTextField number;
 	private int flag;
-	
-	public SelectTeamFrame(String[] names, List<Player> playerList, int flag){
+
+	public SelectTeamFrame(String[] names, List<Player> playerList, int flag) {
 		this.playerList = playerList;
 		this.flag = flag;
-		
+
 		setVisible(true);
 		setSize(400, 700);
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -32,24 +30,24 @@ public class SelectTeamFrame extends JFrame{
 		setResizable(false);
 		setLayout(null);
 		buttons = new JButton[8];
-		for(int i = 0; i < 8; i++){
+		for (int i = 0; i < 8; i++) {
 			buttons[i] = new JButton(names[i]);
 			buttons[i].setBounds(50, 25 + i * 75, 300, 50);
 			add(buttons[i]);
 			buttons[i].addActionListener(new MannListener());
 		}
 	}
-	
-	private class MannListener implements ActionListener{
-		
+
+	private class MannListener implements ActionListener {
+
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
-			if(flag ==1){
+			if (flag == 1) {
 				try {
 					BufferedWriter bw = new BufferedWriter(new FileWriter(arg0.getActionCommand() + ".txt"));
-					for(int i = 0; i < playerList.size(); i++){
-						if(playerList.get(i).getTeam().equals(arg0.getActionCommand())){
-							bw.write(playerList.get(i).toString());
+					for (Player player : playerList) {
+						if (player.getTeam().equals(arg0.getActionCommand())) {
+							bw.write(player.toString());
 							bw.newLine();
 						}
 					}
@@ -65,9 +63,9 @@ public class SelectTeamFrame extends JFrame{
 			inFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 			inFrame.setSize(400, 500);
 			inFrame.setLayout(null);
-			
+
 			JLabel header = new JLabel("Spieler der Mannschaft " + arg0.getActionCommand() + " eingeben");
-			header.setBounds(50, 50, 350 , 50);
+			header.setBounds(50, 50, 350, 50);
 			inFrame.add(header);
 			name = new JTextField();
 			name.setBounds(75, 150, 300, 30);
@@ -85,35 +83,36 @@ public class SelectTeamFrame extends JFrame{
 			ok.setBounds(50, 350, 100, 50);
 			ok.addActionListener(new OKListener(arg0.getActionCommand()));
 			inFrame.add(ok);
-			
+
 		}
-		
+
 	}
-	
-	private class OKListener implements ActionListener{
-		
+
+	private class OKListener implements ActionListener {
+
 		private String team;
-		
-		public OKListener(String team){
+
+		public OKListener(String team) {
 			this.team = team;
 		}
+
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
 			Player s = parsePlayer(name.getText(), number.getText(), team);
-			if(s != null){
+			if (s != null) {
 				playerList.add(s);
-				JOptionPane.showMessageDialog(null,  "Spieler hinzugefuegt!");
+				JOptionPane.showMessageDialog(null, "Spieler hinzugefuegt!");
 				name.setText(null);
 				number.setText(null);
 			}
-			
+
 		}
-		
-		private Player parsePlayer(String name, String number, String team){
+
+		private Player parsePlayer(String name, String number, String team) {
 			int num = 0;
-			try{
+			try {
 				num = Integer.parseInt(number);
-			}catch(NumberFormatException e){
+			} catch (NumberFormatException e) {
 				JOptionPane.showMessageDialog(null, "Falsche eingabe");
 				return null;
 			}

@@ -1,4 +1,8 @@
-package turnier;
+package Util;
+import Util.TeamComparator;
+import turnier.Match;
+import turnier.Team;
+
 import java.util.ArrayList;
 
 public class TableCalculator {

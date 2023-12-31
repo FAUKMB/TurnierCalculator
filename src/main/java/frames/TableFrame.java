@@ -1,9 +1,11 @@
-package turnier;
+package frames;
+import turnier.Match;
+import Util.TableCalculator;
+import turnier.Team;
+
 import java.io.BufferedWriter;
 import java.io.FileWriter;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
