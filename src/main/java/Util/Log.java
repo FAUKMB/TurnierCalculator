@@ -1,6 +1,8 @@
 package Util;
 
 import frames.MainFrame;
+import matchplan.AbstractMatchplan;
+import matchplan.MatchplanSelector;
 import turnier.*;
 
 import java.io.BufferedWriter;
@@ -13,13 +15,10 @@ import java.util.Scanner;
 
 public class Log {
 	private String filename;
-	boolean load = false;
-	private int numberOfTeams;
 	private int numberOfFields;
 
 	public Log(String filename, boolean load) {
 		this.filename = filename;
-		this.load = load;
 	}
 
 	public void logInit(String[] teams, TurnierConfiguration configuration) {
@@ -42,14 +41,12 @@ public class Log {
 			bw.newLine();
 			bw.write(gametime.toString());
 			bw.newLine();
-			bw.write(Turnier.fieldname1);
-			bw.newLine();
-			if (numberOfFields == 2) {
-				bw.write(Turnier.fieldname2);
+			for (int i = 0; i < numberOfFields; i++) {
+				bw.write(Turnier.fieldname[i]);
 				bw.newLine();
 			}
-			for (int i = 0; i < teams.length; i++) {
-				bw.write(teams[i]);
+			for (String team : teams) {
+				bw.write(team);
 				bw.newLine();
 			}
 		} catch (Exception e) {
@@ -80,9 +77,9 @@ public class Log {
 		configuration.setPauseTime(new Time(s.nextLine()));
 		configuration.setGameTime(new Time(s.nextLine()));
 
-		Turnier.fieldname1 = s.nextLine();
-		if (configuration.getNumberOfFields() == 2) {
-			Turnier.fieldname2 = s.nextLine();
+		Turnier.fieldname = new String[configuration.getNumberOfFields()];
+		for (int i = 0; i < Turnier.fieldname.length; i++) {
+			Turnier.fieldname[i] = s.nextLine();
 		}
 		ArrayList<Team> teams = new ArrayList<>();
 		for (int i = 0; i < configuration.getNumberOfTeams(); i++) {
@@ -92,44 +89,38 @@ public class Log {
 			}
 			teams.add(new Team(teamname));
 		}
-		ArrayList<Match> matches = Matchplan.loadGroupstage(teams, configuration);
-
-		new MainFrame(matches, teams, configuration, this);
+		AbstractMatchplan matchplan = MatchplanSelector.createMatchplan(teams, configuration);
+		ArrayList<Match> matches = matchplan.loadGroupstage();
+		loadMatches(matches, configuration);
+		new MainFrame(matches, teams, configuration, this, matchplan);
 		s.close();
 		return 0;
 	}
 
-	public boolean isLoad() {
-		return load;
-	}
-
-	public void loadMatches(ArrayList<Match> matches) {
+	public void loadMatches(ArrayList<Match> matches, TurnierConfiguration configuration) {
 		Scanner s = null;
 		try {
 			s = new Scanner(new FileReader(filename));
 			s.nextLine();
 			s.nextLine();
 			s.nextLine();
-			if (numberOfFields == 2) {
+			s.nextLine();
+			s.nextLine();
+			s.nextLine();
+			s.nextLine();
+			for (int i = 0; i < configuration.getNumberOfTeams() + configuration.getNumberOfFields(); i++) {
 				s.nextLine();
 			}
-			for (int i = 0; i < numberOfTeams; i++) {
-				s.nextLine();
-			}
-			while (true) {
+			while (s.hasNext()) {
 				int id = s.nextInt();
 				int g1 = s.nextInt();
 				int g2 = s.nextInt();
-				Match m = null;
 				if (id < matches.size()) {
-					for (int i = 0; i < matches.size(); i++) {
-						m = matches.get(i);
-						if (matches.get(i).getId() == id) {
-							break;
+					for (Match match : matches) {
+						if (match.getId() == id) {
+							match.addResult(g1, g2);
 						}
-
 					}
-					m.addResult(g1, g2);
 				}
 			}
 		} catch (FileNotFoundException e) {
@@ -138,7 +129,6 @@ public class Log {
 			if (s != null) {
 				s.close();
 			}
-			return;
 		}
 	}
 

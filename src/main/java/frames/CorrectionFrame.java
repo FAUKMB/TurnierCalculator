@@ -2,6 +2,7 @@ package frames;
 
 import Util.Dialog;
 import Util.Log;
+import matchplan.AbstractMatchplan;
 import turnier.Match;
 
 import javax.swing.*;
@@ -13,9 +14,11 @@ import java.util.ArrayList;
 public class CorrectionFrame extends JFrame {
 
 	private final Log log;
+	private final AbstractMatchplan matchplan;
 
-	public CorrectionFrame(ArrayList<Match> matches, MainFrame mainFrame, Log log) {
+	public CorrectionFrame(ArrayList<Match> matches, MainFrame mainFrame, Log log, AbstractMatchplan matchplan) {
 		this.log = log;
+		this.matchplan = matchplan;
 		setVisible(true);
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setLayout(null);
@@ -47,8 +50,8 @@ public class CorrectionFrame extends JFrame {
 			int[] res = Dialog.resultDialog(match.getT1(), match.getT2());
 			if (res != null) {
 				match.addResult(res[0], res[1]);
-				mainFrame.semidone();
 				log.logMatch(match);
+				mainFrame.updateGames(matchplan);
 			} else {
 				JOptionPane.showMessageDialog(null, "Fehler. Ungueltiges Ergebnis");
 			}

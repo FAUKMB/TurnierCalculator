@@ -1,16 +1,22 @@
 package turnier;
 
+import lombok.Getter;
+
 public class Match {
 	private static int idcounter = 0;
-	private static int maxTypeLen = 11;
+	@Getter
 	private Team t1;
+	@Getter
 	private Team t2;
 	private int goalT1 = -1;
 	private int goalT2 = -1;
+	// TODO Auto-generated method stub
+	@Getter
 	private int field;
-	private TYPE type;
+	private final TYPE type;
+	@Getter
 	private int id;
-	private String groupname;
+	private final String groupname;
 
 	public enum TYPE {
 		SEMIFINAL,
@@ -70,10 +76,6 @@ public class Match {
 		this.groupname = groupname;
 	}
 
-	public int getId() {
-		return id;
-	}
-
 	private String alignMaxNameLen(String s) {
 		String ret = s;
 		for (int i = s.length(); i < Turnier.maxNameLen; i++) {
@@ -84,17 +86,14 @@ public class Match {
 
 	public String toString() {
 		String typeS = getType();
+		int maxTypeLen = 11;
 		for (int i = typeS.length(); i < maxTypeLen; i++) {
 			typeS += " ";
 		}
 		String ret = typeS;
 		if (Turnier.numberOfFields == 2) {
 			ret += " ";
-			if (field == 1) {
-				ret += Turnier.fieldname1;
-			} else {
-				ret += Turnier.fieldname2;
-			}
+			ret += Turnier.fieldname[field];
 		}
 		if (goalT1 == -1) {
 			if (getT1() == null) {
@@ -114,26 +113,14 @@ public class Match {
 
 	public String showFrame() {
 		if (getT1() == null || getT2() == null) {
-			if (type == TYPE.FINAL) {
-				return "Sieger hf1 - Sieger hf2";
-			} else {
-				return "Verlierer hf1 - Verlierer hf2";
-			}
+			return "TBD";
 		} else {
 			return getT1().getName() + " - " + getT2().getName();
 		}
 	}
 
-	public Team getT1() {
-		return t1;
-	}
-
 	public void setT1(Team t1) {
 		this.t1 = t1;
-	}
-
-	public Team getT2() {
-		return t2;
 	}
 
 	public void setT2(Team t2) {
@@ -144,17 +131,8 @@ public class Match {
 		return goalT1 != -1;
 	}
 
-	public int getField() {
-		// TODO Auto-generated method stub
-		return field;
-	}
-
 	public String getFieldname() {
-		if (field == 1) {
-			return Turnier.fieldname1;
-		} else {
-			return Turnier.fieldname2;
-		}
+		return Turnier.fieldname[field - 1];
 	}
 
 	public int getGoal1() {

@@ -2,8 +2,8 @@ package frames;
 
 import Util.Dialog;
 import Util.Log;
-import Util.Matchplan;
 import Util.TableCalculator;
+import matchplan.AbstractMatchplan;
 import turnier.*;
 
 import javax.swing.*;
@@ -12,38 +12,84 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 
 //Main screen for the programm
 
 public class MainFrame extends JFrame {
-	private final JLabel curGame1;
-	private Match curMatch1;
-	private Match curMatch2;
-	private final JLabel nextGame1;
-	private JLabel curGame2;
-	private JLabel nextGame2;
+	private final Match[] curMatches;
+	private final JLabel[] curGames;
+	private final JLabel[] nextGames;
 	private ArrayList<Match> matches;
 	private ArrayList<Match> knockout;
 	private final ArrayList<Match> groupphase;
 	private final ArrayList<Team> teams;
 	private final Log log;
-
 	private final TurnierConfiguration configuration;
-
 	private final LinkedList<Player> sListe = new LinkedList<>();
 
-	void updateGames() {
-		doUpdateGame(1);
-		if (configuration.getNumberOfFields() == 2) {
-			doUpdateGame(2);
+	void updateGames(AbstractMatchplan matchplan) {
+		matchplan.updateKnockoutMatches();
+		for (int i = 0; i < configuration.getNumberOfFields(); i++) {
+			Matchpair currentGames = getCurrentGames(i);
+			updateGameFrames(currentGames, i);
+		}
+		if (gamesFinished()) {
+			if (knockout == null && configuration.isKnockout()) {
+				perpareKnockoutStage(matchplan);
+				updateGames(matchplan);
+			} else {
+				JOptionPane.showMessageDialog(null, "Turnier done.");
+			}
 		}
 	}
 
-	void doUpdateGame(int field) {
+	private void perpareKnockoutStage(AbstractMatchplan matchplan) {
+
+		showMatchplan();
+		int res = JOptionPane.showConfirmDialog(null, "Sind alle Ergebnisse korrekt?");
+		if (res != JOptionPane.OK_OPTION) {
+			JOptionPane.showMessageDialog(null, "Korrigiere das Ergebnis ueber die Korrekturfunktion. Danach erneut Ergebnis eintragen klicken!");
+			return;
+		}
+
+		calculateKnockoutStage(matchplan);
+	}
+
+	private void calculateKnockoutStage(AbstractMatchplan matchplan) {
+		List<Team> groupA = teams.subList(0, (teams.size() + 1) / 2);
+		List<Team> groupB = teams.subList((teams.size() + 1) / 2, teams.size());
+		TableCalculator.calcTable(matches, groupA, true);
+		TableCalculator.calcTable(matches, groupB, true);
+		for (int i = 0; i < groupB.size(); i++) {
+			groupA.get(i).setPosition(i * 2 + 1);
+			groupB.get(i).setPosition(i * 2 + 1);
+		}
+		if (groupA.size() != groupB.size()) {
+			groupA.get(groupA.size() - 1).setPosition(teams.size() - 2);
+		}
+		matches = matchplan.loadKnockoutStage();
+		knockout = matches;
+	}
+
+	private boolean gamesFinished() {
+		for (Match m : matches) {
+			if (!m.played()) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	record Matchpair(Match cur, Match next) {
+
+	}
+
+	Matchpair getCurrentGames(int field) {
 		Match cur = null;
 		Match next = null;
 		for (Match match : matches) {
-			if (!match.played() && match.getField() == field) {
+			if (!match.played() && match.getField() == field + 1) {
 				if (cur == null) {
 					cur = match;
 				} else {
@@ -52,42 +98,27 @@ public class MainFrame extends JFrame {
 				}
 			}
 		}
-		if (cur != null) {
+		return new Matchpair(cur, next);
+	}
 
-			if (field == 1) {
-				curGame1.setText("Aktuelle Partie " + Turnier.fieldname1 + " (" + cur.getType() + "): " + cur.showFrame());
-				curMatch1 = cur;
-			} else {
-				curMatch2 = cur;
-				curGame2.setText("Aktuelle Partie " + Turnier.fieldname2 + " (" + cur.getType() + "): " + cur.showFrame());
-			}
+	void updateGameFrames(Matchpair currentGames, int field) {
+		if (currentGames.cur != null) {
+			curGames[field].setText("Aktuelle Partie " + Turnier.fieldname[field] + " (" + currentGames.cur.getType() + "): " + currentGames.cur.showFrame());
+			curMatches[field] = currentGames.cur;
 		} else {
-			if (field == 1) {
-				curMatch1 = null;
-				curGame1.setText("Aktuelle Partie " + Turnier.fieldname1 + ": Pause...");
-			} else {
-				curMatch2 = null;
-				curGame2.setText("Aktuelle Partie " + Turnier.fieldname2 + "2: Pause...");
-			}
+			curMatches[field] = null;
+			curGames[field].setText("Aktuelle Partie " + Turnier.fieldname[field] + ": Pause...");
 		}
-		if (next != null) {
-			if (field == 1) {
-				nextGame1.setText("Naechste Partie " + Turnier.fieldname1 + " (" + next.getType() + "): " + next.showFrame());
-			} else {
-				nextGame2.setText("Naechste Partie " + Turnier.fieldname2 + " (" + next.getType() + "): " + next.showFrame());
-			}
+		if (currentGames.next != null) {
+			nextGames[field].setText("Naechste Partie " + Turnier.fieldname[field] + " (" + currentGames.next.getType() + "): " + currentGames.next.showFrame());
 		} else {
-			if (field == 1) {
-				nextGame1.setText("Naechsete Partie " + Turnier.fieldname1 + ": Pause...");
-			} else {
-				nextGame2.setText("Naechsete Partie " + Turnier.fieldname2 + ": Pause...");
-			}
+			nextGames[field].setText("Naechsete Partie " + Turnier.fieldname[field] + ": Pause...");
 		}
 	}
 
 
 	//Init Main menue
-	public MainFrame(ArrayList<Match> matches, ArrayList<Team> teams, TurnierConfiguration configuration, Log log) {
+	public MainFrame(ArrayList<Match> matches, ArrayList<Team> teams, TurnierConfiguration configuration, Log log, AbstractMatchplan matchplan) {
 		this.matches = matches;
 		groupphase = matches;
 		this.teams = teams;
@@ -104,65 +135,31 @@ public class MainFrame extends JFrame {
 		Font normalFont = new Font("Arial", Font.BOLD, 20);
 		Font haedFont = new Font("Arial", Font.BOLD, 50);
 
-		curGame1 = new JLabel("Aktuelle Partie Feld 1: Ungenutzt");
-		curGame1.setBounds(50, 100, 1200, 30);
-		curGame1.setFont(normalFont);
-		add(curGame1);
+		curGames = new JLabel[configuration.getNumberOfFields()];
+		curMatches = new Match[configuration.getNumberOfFields()];
+		nextGames = new JLabel[configuration.getNumberOfFields()];
 
-		nextGame1 = new JLabel("Naechste Partie Feld 1: Ungenutzt");
-		nextGame1.setBounds(50, 150, 1200, 30);
-		nextGame1.setFont(normalFont);
-		add(nextGame1);
+		curGames[0] = new JLabel("Aktuelle Partie Feld 1: Ungenutzt");
+		curGames[0].setBounds(50, 100, 1200, 30);
+		curGames[0].setFont(normalFont);
+		add(curGames[0]);
+
+		nextGames[0] = new JLabel("Naechste Partie Feld 1: Ungenutzt");
+		nextGames[0].setBounds(50, 150, 1200, 30);
+		nextGames[0].setFont(normalFont);
+		add(nextGames[0]);
 
 		if (configuration.getNumberOfFields() == 2) {
-			curGame2 = new JLabel("Aktuelle Partie Feld 2: Ungenutzt");
-			curGame2.setBounds(50, 250, 1200, 30);
-			curGame2.setFont(normalFont);
-			add(curGame2);
+			curGames[1] = new JLabel("Aktuelle Partie Feld 2: Ungenutzt");
+			curGames[1].setBounds(50, 250, 1200, 30);
+			curGames[1].setFont(normalFont);
+			add(curGames[1]);
 
-			nextGame2 = new JLabel("Naechste Partie Feld 2: Ungenutzt");
-			nextGame2.setBounds(50, 300, 1200, 30);
-			nextGame2.setFont(normalFont);
-			add(nextGame2);
+			nextGames[1] = new JLabel("Naechste Partie Feld 2: Ungenutzt");
+			nextGames[1].setBounds(50, 300, 1200, 30);
+			nextGames[1].setFont(normalFont);
+			add(nextGames[1]);
 		}
-		updateGames();
-		if (log.isLoad()) {
-			log.loadMatches(matches);
-			updateGames();
-
-			if (curMatch1 == null && curMatch2 == null && knockout == null) {
-				if (configuration.isKnockout() && knockout == null) {
-					ArrayList<Team> groupA = new ArrayList<>();
-					ArrayList<Team> groupB = new ArrayList<>();
-
-					for (int i = 0; i < teams.size(); i++) {
-						if (i < (teams.size() + 1) / 2) {
-							groupA.add(teams.get(i));
-						} else {
-							groupB.add(teams.get(i));
-						}
-					}
-					TableCalculator.clear(groupA);
-					TableCalculator.calcTable(matches, groupA, true);
-					TableCalculator.clear(groupB);
-					TableCalculator.calcTable(matches, groupB, true);
-					for (int i = 0; i < groupB.size(); i++) {
-						groupA.get(i).setPosition(i * 2 + 1);
-						groupB.get(i).setPosition(i * 2 + 1);
-					}
-					if (groupA.size() != groupB.size()) {
-						groupA.get(groupA.size() - 1).setPosition(teams.size() - 2);
-					}
-					knockout = Matchplan.knockout(groupA, groupB, configuration.getNumberOfFields(), configuration.isHasSemi());
-					this.matches = knockout;
-					log.loadMatches(matches);
-					semidone();
-					updateGames();
-				}
-			}
-		}
-
-
 		JLabel head = new JLabel(configuration.getTurnierName());
 		head.setBounds(150, 30, 900, 50);
 		head.setFont(haedFont);
@@ -205,27 +202,27 @@ public class MainFrame extends JFrame {
 		endGame.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				setEntry();
+				setEntry(matchplan);
 			}
 		});
 		add(endGame);
 
-		JButton matchplan = new JButton("Spielplan");
-		matchplan.setBounds(50, 500, 200, 50);
-		matchplan.addActionListener(new ActionListener() {
+		JButton matchplanLabel = new JButton("Spielplan");
+		matchplanLabel.setBounds(50, 500, 200, 50);
+		matchplanLabel.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				showMatchplan();
 			}
 		});
-		add(matchplan);
+		add(matchplanLabel);
 
 		JButton fix = new JButton("Korrektur");
 		fix.setBounds(800, 500, 200, 50);
 		fix.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				correct();
+				correct(matchplan);
 			}
 		});
 		add(fix);
@@ -262,11 +259,23 @@ public class MainFrame extends JFrame {
 		showGoals.setEnabled(false);
 		add(showGoals);
 
+
+		if (gamesFinished()) {
+			if (configuration.isKnockout()) {
+				calculateKnockoutStage(matchplan);
+				log.loadMatches(matches, configuration);
+				updateGames(matchplan);
+			} else {
+				JOptionPane.showMessageDialog(null, "Turnier done.");
+			}
+		}
+
+		updateGames(matchplan);
 		setVisible(true);
 	}
 
-	private void correct() {
-		new CorrectionFrame(matches, this, log);
+	private void correct(AbstractMatchplan matchplan) {
+		new CorrectionFrame(matches, this, log, matchplan);
 	}
 
 	//Actions depending on button pressed
@@ -278,85 +287,14 @@ public class MainFrame extends JFrame {
 		new MatchplanFrame(list, configuration);
 	}
 
-	public void semidone() {
-		if (knockout == null) {
-			return;
-		}
-		Match semi1 = null;
-		Match semi2 = null;
-		int size = knockout.size();
-		for (int i = 0; i < size; i++) {
-			Match cur = knockout.get(i);
-			if (cur.isSemi() && cur.played()) {
-				if (semi1 == null) {
-					semi1 = cur;
-				} else {
-					semi2 = cur;
-				}
-				if (semi2 != null) {
-					Matchplan.setFinals(semi1.winner(), semi2.winner(), semi1.looser(), semi2.looser(), knockout);
-				}
-			}
-		}
-	}
-
-	private void setEntry() {
+	private void setEntry(AbstractMatchplan matchplan) {
+		updateGames(matchplan);
 		int field = 0;
 		if (configuration.getNumberOfFields() > 1) {
-			field = Dialog.optionDialog(new String[]{Turnier.fieldname1, Turnier.fieldname2}, "Welches Feld ist fertig?");
+			field = Dialog.optionDialog(Turnier.fieldname, "Welches Feld ist fertig?");
 		}
-		field += 1;
-		if (field == 1 && curMatch1 != null) {
-			doEntry(curMatch1);
-			if (configuration.isHasSemi()) {
-				semidone();
-			}
-		} else if (field == 2 && curMatch2 != null) {
-			doEntry(curMatch2);
-			if (configuration.isHasSemi()) {
-				semidone();
-			}
-		}
-
-
-		updateGames();
-
-		if (curMatch1 == null && curMatch2 == null && knockout == null) {
-			if (configuration.isKnockout()) {
-				ArrayList<Team> groupA = new ArrayList<>();
-				ArrayList<Team> groupB = new ArrayList<>();
-				showMatchplan();
-				int res = JOptionPane.showConfirmDialog(null, "Sind alle Ergebnisse korrekt?");
-				if (res != JOptionPane.OK_OPTION) {
-					JOptionPane.showMessageDialog(null, "Korrigiere das Ergebnis ueber die Korrekturfunktion. Danach erneut Ergebnis eintragen klicken!");
-					return;
-				}
-
-				for (int i = 0; i < teams.size(); i++) {
-					if (i < (teams.size() + 1) / 2) {
-						groupA.add(teams.get(i));
-					} else {
-						groupB.add(teams.get(i));
-					}
-				}
-				TableCalculator.clear(groupA);
-				TableCalculator.calcTable(matches, groupA, true);
-				TableCalculator.clear(groupB);
-				TableCalculator.calcTable(matches, groupB, true);
-				for (int i = 0; i < groupB.size(); i++) {
-					groupA.get(i).setPosition(i * 2 + 1);
-					groupB.get(i).setPosition(i * 2 + 1);
-				}
-				if (groupA.size() != groupB.size()) {
-					groupA.get(groupA.size() - 1).setPosition(teams.size() - 2);
-				}
-				knockout = Matchplan.knockout(groupA, groupB, configuration.getNumberOfFields(), configuration.isHasSemi());
-				matches = knockout;
-				updateGames();
-			} else {
-				JOptionPane.showMessageDialog(null, "Turnier beendet!");
-			}
-		}
+		doEntry(field);
+		updateGames(matchplan);
 	}
 
 	private void insertPlayer(int flag) {
@@ -373,9 +311,9 @@ public class MainFrame extends JFrame {
 			String[] ops = {"Gruppe A", "Gruppe B", "Alle"};
 			d = JOptionPane.showOptionDialog(null, "Waehle Gruppe:", null, 0, JOptionPane.INFORMATION_MESSAGE, null, ops, null);
 			if (d == 0) {
-				new TableFrame(groupphase, Matchplan.subList(teams, 0, (teams.size() + 1) / 2), configuration.getTurnierName() + "_Gruppe_A", true);
+				new TableFrame(groupphase, teams.subList(0, (teams.size() + 1) / 2), configuration.getTurnierName() + "_Gruppe_A", true);
 			} else if (d == 1) {
-				new TableFrame(groupphase, Matchplan.subList(teams, (teams.size() + 1) / 2, teams.size()), configuration.getTurnierName() + "_Gruppe_B", true);
+				new TableFrame(groupphase, teams.subList((teams.size() + 1) / 2, teams.size()), configuration.getTurnierName() + "_Gruppe_B", true);
 			} else if (d == 2) {
 				new TableFrame(matches, teams, configuration.getTurnierName() + "_Endstand", false);
 			}
@@ -389,7 +327,8 @@ public class MainFrame extends JFrame {
 		new GoalFrame(sListe, "fff", "fff");
 	}
 
-	private void doEntry(Match match) {
+	private void doEntry(int field) {
+		Match match = curMatches[field];
 		int[] result = Dialog.resultDialog(match.getT1(), match.getT2());
 		if (result != null && valid(result, match)) {
 			match.addResult(result[0], result[1]);

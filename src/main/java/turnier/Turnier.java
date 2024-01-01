@@ -2,8 +2,9 @@ package turnier;
 
 import Util.Dialog;
 import Util.Log;
-import Util.Matchplan;
 import frames.MainFrame;
+import matchplan.AbstractMatchplan;
+import matchplan.MatchplanSelector;
 
 import javax.swing.*;
 import java.util.ArrayList;
@@ -28,9 +29,7 @@ import java.util.ArrayList;
 
 public class Turnier {
 	public static int maxNameLen = 0;
-	public static String fieldname1;
-	public static String fieldname2;
-
+	public static String[] fieldname;
 	public static int numberOfFields;
 
 	public static void main(String[] args) {
@@ -50,23 +49,9 @@ public class Turnier {
 			Dialog.showSemifinalDialog(configuration);
 		}
 		numberOfFields = configuration.getNumberOfFields();
-		if (configuration.getNumberOfFields() != 1) {
-			fieldname1 = JOptionPane.showInputDialog("Feldname 1");
-			if (fieldname1 == null || fieldname1.length() > 6) {
-				JOptionPane.showMessageDialog(null, "Ungueltiger Feldname");
-				return;
-			}
-			for (int i = fieldname1.length(); i < 6; i++) {
-				fieldname1 += " ";
-			}
-			fieldname2 = JOptionPane.showInputDialog("Feldname 2");
-			if (fieldname2 == null || fieldname2.length() > 6) {
-				JOptionPane.showMessageDialog(null, "Ungueltiger Feldname");
-				return;
-			}
-			for (int i = fieldname2.length(); i < 6; i++) {
-				fieldname2 += " ";
-			}
+		fieldname = new String[numberOfFields];
+		for (int i = 0; i < numberOfFields; i++) {
+			fieldname[i] = "Feld" + i;
 		}
 
 		ArrayList<Team> teams = new ArrayList<>();
@@ -80,12 +65,12 @@ public class Turnier {
 			}
 			teams.add(new Team(s));
 		}
-
-		ArrayList<Match> matches = Matchplan.loadGroupstage(teams, configuration);
+		AbstractMatchplan matchplan = MatchplanSelector.createMatchplan(teams, configuration);
+		ArrayList<Match> matches = matchplan.loadGroupstage();
 		Log log = new Log(configuration.getTurnierName() + "_log.txt", false);
 		String[] teamss = teams.stream().map(Team::getName).toArray(String[]::new);
 		log.logInit(teamss, configuration);
 
-		new MainFrame(matches, teams, configuration, log);
+		new MainFrame(matches, teams, configuration, log, matchplan);
 	}
 }

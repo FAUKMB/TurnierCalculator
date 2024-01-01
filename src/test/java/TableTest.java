@@ -1,20 +1,28 @@
+import Util.TableCalculator;
+import matchplan.AbstractMatchplan;
+import matchplan.MatchplanSelector;
+import org.testng.Assert;
+import org.testng.annotations.Test;
+import turnier.Match;
+import turnier.Team;
+import turnier.TurnierConfiguration;
+
+import java.util.ArrayList;
+import java.util.List;
+
 public class TableTest {
-	/*
-	
-	ArrayList<Team> createTeams(int numberOfTeams){
+
+
+	ArrayList<Team> createTeams(int numberOfTeams) {
 		ArrayList<Team> teams = new ArrayList<>();
 		char c = 'a';
-		for(int i = 0; i < numberOfTeams; i++) {
-			String name = "";
-			for(int j = 0; j < i+1; j++) {
-				name += (char)(c+i);
-			}
-			teams.add(new Team(name));
+		for (int i = 0; i < numberOfTeams; i++) {
+			teams.add(new Team(String.valueOf((char) (c + i)).repeat(i + 1)));
 		}
 		return teams;
 	}
-	
-	
+
+
 	private void result81(ArrayList<Match> matches) {
 		matches.get(0).addResult(3, 3);
 		matches.get(1).addResult(1, 1);
@@ -29,59 +37,44 @@ public class TableTest {
 		matches.get(10).addResult(3, 3);
 		matches.get(11).addResult(3, 3);
 	}
-	
-	private void test81(ArrayList<Team> groupA, ArrayList<Team> groupB) {
-		assertEquals(groupA.get(0).getName(), "a");
-		assertEquals(groupA.get(1).getName(), "bb");
-		assertEquals(groupA.get(2).getName(), "ccc");
-		assertEquals(groupA.get(3).getName(), "dddd");
-		assertEquals(groupB.get(0).getName(), "hhhhhhhh");
-		assertEquals(groupB.get(1).getName(), "eeeee");
-		assertEquals(groupB.get(2).getName(), "ffffff");
-		assertEquals(groupB.get(3).getName(), "ggggggg");
-		
+
+	private void test81(List<Team> groupA, List<Team> groupB) {
+		Assert.assertEquals(groupA.get(0).getName(), "a");
+		Assert.assertEquals(groupA.get(1).getName(), "bb");
+		Assert.assertEquals(groupA.get(2).getName(), "ccc");
+		Assert.assertEquals(groupA.get(3).getName(), "dddd");
+		Assert.assertEquals(groupB.get(0).getName(), "hhhhhhhh");
+		Assert.assertEquals(groupB.get(1).getName(), "eeeee");
+		Assert.assertEquals(groupB.get(2).getName(), "ffffff");
+		Assert.assertEquals(groupB.get(3).getName(), "ggggggg");
+
 	}
 
 	@Test
 	public void test8() {
 		ArrayList<Team> teams = createTeams(8);
-		ArrayList<Team> groupA = new ArrayList<>();
-		for(int i = 0; i < 4; i++) {
-			groupA.add(teams.get(i));
-		}
-		ArrayList<Team> groupB = new ArrayList<>();
-		for(int i = 4; i < 8; i++) {
-			groupB.add(teams.get(i));
-		}
-		ArrayList<Match> matches = Matchplan.loadGroupstage(2, teams, 0);
+		List<Team> groupA = teams.subList(0, 4);
+		List<Team> groupB = teams.subList(4, 8);
+		TurnierConfiguration configuration = new TurnierConfiguration();
+		configuration.setNumberOfFields(2);
+		configuration.setNumberOfTeams(8);
+		configuration.setPlaytype(TurnierConfiguration.PLAYTYPE.KNOCKOUT);
+		configuration.setHasSemi(true);
+		AbstractMatchplan matchplan = MatchplanSelector.createMatchplan(teams, configuration);
+		ArrayList<Match> matches = matchplan.loadGroupstage();
 		result81(matches);
 		TableCalculator.calcTable(matches, groupA, true);
 		TableCalculator.calcTable(matches, groupB, true);
 		test81(groupA, groupB);
-		ArrayList<Match> k = Matchplan.knockout(groupA, groupB, 2, true);
-		assertEquals(k.get(0).getT1().getName(), "a");
-		assertEquals(k.get(0).getT2().getName(), "eeeee");
-		assertEquals(k.get(1).getT1().getName(), "hhhhhhhh");
-		assertEquals(k.get(1).getT2().getName(), "bb");
-		assertEquals(k.get(2).getT1().getName(), "ccc");
-		assertEquals(k.get(2).getT2().getName(), "ffffff");
-		assertEquals(k.get(3).getT1().getName(), "ggggggg");
-		assertEquals(k.get(3).getT2().getName(), "dddd");
+		ArrayList<Match> k = matchplan.loadKnockoutStage();
+		Assert.assertEquals(k.get(0).getT1().getName(), "a");
+		Assert.assertEquals(k.get(0).getT2().getName(), "eeeee");
+		Assert.assertEquals(k.get(1).getT1().getName(), "hhhhhhhh");
+		Assert.assertEquals(k.get(1).getT2().getName(), "bb");
+		Assert.assertEquals(k.get(2).getT1().getName(), "ccc");
+		Assert.assertEquals(k.get(2).getT2().getName(), "ffffff");
+		Assert.assertEquals(k.get(3).getT1().getName(), "ggggggg");
+		Assert.assertEquals(k.get(3).getT2().getName(), "dddd");
 	}
-	
-	@Test
-	public void test9() {
-		ArrayList<Team> teams = createTeams(9);
-		ArrayList<Team> groupA = new ArrayList<>();
-		for(int i = 0; i < 5; i++) {
-			groupA.add(teams.get(i));
-		}
-		ArrayList<Team> groupB = new ArrayList<>();
-		for(int i = 5; i < 8; i++) {
-			groupB.add(teams.get(i));
-		}
-		ArrayList<Match> matches = Matchplan.loadGroupstage(2, teams, 0);
-		
-	}
-*/
+
 }
