@@ -6,6 +6,7 @@ import turnier.TurnierConfiguration;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Dialog {
@@ -73,7 +74,15 @@ public class Dialog {
 				conf.setStartTime(new Time(startTime.getText()));
 				conf.setTurnierName(nameField.getText());
 				conf.setNumberOfFields(Integer.parseInt(numberOfFields.getText()));
-				conf.setNumberOfTeams(Integer.parseInt(numberOfTeams.getText()));
+				ArrayList<Team> teams = new ArrayList<>();
+				for (int i = 0; i < Integer.parseInt(numberOfTeams.getText()); i++) {
+					String teamname = JOptionPane.showInputDialog("Mannschaft " + (i + 1) + " eingeben:");
+					if (teamname == null) {
+						throw new IllegalArgumentException();
+					}
+					teams.add(new Team(teamname));
+				}
+				conf.setTeams(teams);
 				break;
 			} catch (Exception e) {
 				JOptionPane.showMessageDialog(null, "Invalid Config");
@@ -102,7 +111,7 @@ public class Dialog {
 	}
 
 	public static void showPlaytypeDialog(TurnierConfiguration configuration) {
-		List<TurnierConfiguration.PLAYTYPE> types = configuration.getTypeOptions().get(configuration.getNumberOfTeams());
+		List<TurnierConfiguration.PLAYTYPE> types = configuration.getTypeOptions().get(configuration.getTeams().size());
 		if (types.size() == 1) {
 			configuration.setPlaytype(types.get(0));
 		} else {

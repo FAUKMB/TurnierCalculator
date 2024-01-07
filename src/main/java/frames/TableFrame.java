@@ -7,14 +7,22 @@ import turnier.Team;
 import javax.swing.*;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
-import java.util.ArrayList;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
 
 //print table with this frame and put it into a file as well
 
 public class TableFrame extends JFrame {
 
-	public TableFrame(ArrayList<Match> matches, List<Team> teams, String header, boolean headToHead) {
+	private static final Path TABLE_FOLDER = Path.of("Tabellen");
+
+	public TableFrame(List<Match> matches, List<Team> teams, String header, boolean headToHead) {
+		try {
+			Files.createDirectories(TABLE_FOLDER);
+		} catch (Exception e) {
+			System.err.println("Could not create Folder.");
+		}
 		TableCalculator.calcTable(matches, teams, headToHead);
 		setVisible(true);
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -40,7 +48,7 @@ public class TableFrame extends JFrame {
 		JLabel[] lbPoints = new JLabel[teams.size()];
 		JLabel[] lbNum = new JLabel[teams.size()];
 		try {
-			BufferedWriter bw = new BufferedWriter(new FileWriter("Tabelle_" + header + ".txt"));
+			BufferedWriter bw = new BufferedWriter(new FileWriter(TABLE_FOLDER.resolve("Tabelle_" + header + ".txt").toFile()));
 			bw.write(head.getText());
 			bw.newLine();
 			bw.newLine();
@@ -65,7 +73,7 @@ public class TableFrame extends JFrame {
 			bw.close();
 
 			//Process p = Runtime.getRuntime().exec("python3 pdfconvert.py \"Tabelle_" + header+ "\"");
-			Process p = Runtime.getRuntime().exec(new String[]{"python3", "pdfconvert.py", "Tabelle_" + header});
+			Process p = Runtime.getRuntime().exec(new String[]{"python3", "pdfconvert.py", TABLE_FOLDER.resolve("Tabelle_" + header).toString()});
 			p.waitFor();
 		} catch (Exception e) {
 			System.err.println("Severe error occured during writing the file!! Exit the programm and check your hard disk or RAM!");

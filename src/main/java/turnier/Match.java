@@ -1,21 +1,19 @@
 package turnier;
 
 import lombok.Getter;
+import lombok.Setter;
 
+@Getter
+@Setter
 public class Match {
 	private static int idcounter = 0;
-	@Getter
 	private Team t1;
-	@Getter
 	private Team t2;
 	private int goalT1 = -1;
 	private int goalT2 = -1;
-	// TODO Auto-generated method stub
-	@Getter
-	private int field;
+	private final int field;
 	private final TYPE type;
-	@Getter
-	private int id;
+	private final int id;
 	private final String groupname;
 
 	public enum TYPE {
@@ -77,20 +75,14 @@ public class Match {
 	}
 
 	private String alignMaxNameLen(String s) {
-		String ret = s;
-		for (int i = s.length(); i < Turnier.maxNameLen; i++) {
-			s += " ";
-		}
-		return ret;
+		return s + " ".repeat(Math.max(0, Turnier.maxNameLen - s.length()));
 	}
 
 	public String toString() {
-		String typeS = getType();
+		StringBuilder typeS = new StringBuilder(getTypeString());
 		int maxTypeLen = 11;
-		for (int i = typeS.length(); i < maxTypeLen; i++) {
-			typeS += " ";
-		}
-		String ret = typeS;
+		typeS.append(" ".repeat(Math.max(0, maxTypeLen - typeS.length())));
+		String ret = typeS.toString();
 		if (Turnier.numberOfFields == 2) {
 			ret += " ";
 			ret += Turnier.fieldname[field];
@@ -104,11 +96,10 @@ public class Match {
 				}
 			}
 			ret += " " + getT1().getNamePrint() + " - " + getT2().getNamePrint();
-			return ret;
 		} else {
 			ret += " " + getT1().getNamePrint() + " - " + getT2().getNamePrint() + "   " + goalT1 + " : " + goalT2;
-			return ret;
 		}
+		return ret;
 	}
 
 	public String showFrame() {
@@ -119,14 +110,6 @@ public class Match {
 		}
 	}
 
-	public void setT1(Team t1) {
-		this.t1 = t1;
-	}
-
-	public void setT2(Team t2) {
-		this.t2 = t2;
-	}
-
 	public boolean played() {
 		return goalT1 != -1;
 	}
@@ -135,15 +118,7 @@ public class Match {
 		return Turnier.fieldname[field - 1];
 	}
 
-	public int getGoal1() {
-		return goalT1;
-	}
-
-	public int getGoal2() {
-		return goalT2;
-	}
-
-	public String getType() {
+	public String getTypeString() {
 		String ret = "";
 		if (type == TYPE.GROUP) {
 			ret = "Gruppe";
@@ -190,10 +165,5 @@ public class Match {
 
 	public boolean isKO() {
 		return type == TYPE.PLACEMENT || type == TYPE.SEMIFINAL || type == TYPE.FINAL || type == TYPE.THIRD;
-	}
-
-	public TYPE getTYPE() {
-		// TODO Auto-generated method stub
-		return type;
 	}
 }

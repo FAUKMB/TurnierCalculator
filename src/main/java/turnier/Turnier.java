@@ -3,11 +3,12 @@ package turnier;
 import Util.Dialog;
 import Util.Log;
 import frames.MainFrame;
-import matchplan.AbstractMatchplan;
-import matchplan.MatchplanSelector;
+import matchplan.Matchplan;
+import matchplan.MatchplanCreator;
 
 import javax.swing.*;
-import java.util.ArrayList;
+import java.io.IOException;
+import java.util.List;
 
 //Program to simulate a soccer competition with 8 teams 
 
@@ -32,12 +33,12 @@ public class Turnier {
 	public static String[] fieldname;
 	public static int numberOfFields;
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
 
 
 		String logfile = JOptionPane.showInputDialog("load from logfile?");
 		if (logfile != null) {
-			Log log = new Log(logfile, true);
+			Log log = new Log(logfile);
 			if (-1 == log.load()) {
 				JOptionPane.showMessageDialog(null, "logfile nicht gefunden");
 			}
@@ -51,26 +52,19 @@ public class Turnier {
 		numberOfFields = configuration.getNumberOfFields();
 		fieldname = new String[numberOfFields];
 		for (int i = 0; i < numberOfFields; i++) {
-			fieldname[i] = "Feld" + i;
+			fieldname[i] = "Feld" + (i + 1);
 		}
 
-		ArrayList<Team> teams = new ArrayList<>();
-		for (int i = 0; i < configuration.getNumberOfTeams(); i++) {
-			String s = JOptionPane.showInputDialog("Mannschaft " + (i + 1) + " eingeben:");
-			if (s == null) {
-				return;
+		for (Team t : configuration.getTeams()) {
+			if (maxNameLen < t.getName().length()) {
+				maxNameLen = t.getName().length();
 			}
-			if (s.length() > maxNameLen) {
-				maxNameLen = s.length();
-			}
-			teams.add(new Team(s));
 		}
-		AbstractMatchplan matchplan = MatchplanSelector.createMatchplan(teams, configuration);
-		ArrayList<Match> matches = matchplan.loadGroupstage();
-		Log log = new Log(configuration.getTurnierName() + "_log.txt", false);
-		String[] teamss = teams.stream().map(Team::getName).toArray(String[]::new);
-		log.logInit(teamss, configuration);
+		Matchplan matchplan = MatchplanCreator.selectMatchplan(configuration);
+		List<Match> matches = matchplan.loadGroupstageMatches(configuration);
+		Log log = new Log(configuration.getTurnierName() + "_log.txt");
+		log.logInit(configuration);
 
-		new MainFrame(matches, teams, configuration, log, matchplan);
+		new MainFrame(matches, configuration, log, matchplan);
 	}
 }

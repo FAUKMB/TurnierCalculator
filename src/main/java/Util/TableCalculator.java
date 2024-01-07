@@ -16,26 +16,25 @@ public class TableCalculator {
 		}
 	}
 
-	public static void calcTable(ArrayList<Match> matches, List<Team> teams, boolean headToHead) {
-		clear(teams);
+	public static void calcTable(List<Match> matches, List<Team> teams, boolean headToHead) {
 		doCalcTable(matches, teams, headToHead);
 		clear(teams);
-		for (Match match : matches) {
-			if (match.played() && teams.contains(match.getT1()) && teams.contains(match.getT2())) {
-				match.confirmResult();
-			}
-		}
+		confirmResults(matches, teams);
 	}
 
-	private static void doCalcTable(ArrayList<Match> matches, List<Team> teams, boolean headToHead) {
-		clear(teams);
+	private static void confirmResults(List<Match> matches, List<Team> teams) {
 		for (Match m : matches) {
 			if (teams.contains(m.getT1()) && teams.contains(m.getT2()) && m.played()) {
 				m.confirmResult();
 			}
 		}
+	}
+
+	private static void doCalcTable(List<Match> matches, List<Team> teams, boolean headToHead) {
+		clear(teams);
+		confirmResults(matches, teams);
 		//normal table
-		teams.sort(new TeamComparator());
+		teams.sort(TableCalculator::compareTeams);
 		if (!headToHead) {
 			return;
 		}
@@ -58,4 +57,18 @@ public class TableCalculator {
 			i += newTeams.size() - 1;
 		}
 	}
+
+	private static int compareTeams(Team t1, Team t2) {
+		if (t1.getPosition() != t2.getPosition()) {
+			return Integer.compare(t1.getPosition(), t2.getPosition());
+		}
+		if (t1.getPoints() != t2.getPoints()) {
+			return Integer.compare(t2.getPoints(), t1.getPoints());
+		} else if (t1.getGoals() - t1.getMinusgoals() != t2.getGoals() - t2.getMinusgoals()) {
+			return Integer.compare(t2.getGoals() - t2.getMinusgoals(), t1.getGoals() - t1.getMinusgoals());
+		} else {
+			return Integer.compare(t2.getGoals(), t1.getGoals());
+		}
+	}
 }
+
