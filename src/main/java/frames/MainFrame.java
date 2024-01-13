@@ -60,8 +60,8 @@ public class MainFrame extends JFrame {
 		}
 
 		drawLabel(configuration.getTurnierName(), 150, 30, 900, 50, haedFont);
-		drawLabel("Spielzeit: " + configuration.getGameTime() + "min", 1230, 50, 200, 50, normalFont);
-		drawLabel("Pause: " + configuration.getPauseTime() + "min", 1230, 75, 200, 50, normalFont);
+		drawLabel("Spielzeit: " + configuration.getGameTime(), 1130, 50, 300, 50, normalFont);
+		drawLabel("Pause: " + configuration.getPauseTime(), 1130, 75, 300, 50, normalFont);
 
 		drawButton("Endergebnis", 300, 500, this::setEntry);
 		drawButton("Spielplan", 50, 500, this::showMatchplan);
