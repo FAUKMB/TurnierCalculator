@@ -11,8 +11,6 @@ import turnier.TurnierConfiguration;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
@@ -65,10 +63,10 @@ public class MainFrame extends JFrame {
 		drawLabel("Spielzeit: " + configuration.getGameTime() + "min", 1230, 50, 200, 50, normalFont);
 		drawLabel("Pause: " + configuration.getPauseTime() + "min", 1230, 75, 200, 50, normalFont);
 
-		drawButton("Endergebnis", 250, 500, 200, 50, this::setEntry);
-		drawButton("Spielplan", 50, 500, 200, 50, this::showMatchplan);
-		drawButton("Korrektur", 800, 500, 200, 50, this::correct);
-		drawButton("Tabellen anzeigen", 800, 400, 200, 50, this::showTable);
+		drawButton("Endergebnis", 300, 500, this::setEntry);
+		drawButton("Spielplan", 50, 500, this::showMatchplan);
+		drawButton("Korrektur", 550, 500, this::correct);
+		drawButton("Tabellen anzeigen", 800, 500, this::showTable);
 
 		if (gamesFinished()) {
 			if (configuration.isKnockout()) {
@@ -92,15 +90,10 @@ public class MainFrame extends JFrame {
 		return label;
 	}
 
-	private void drawButton(String text, int x, int y, int width, int height, Consumer<Void> action) {
+	private void drawButton(String text, int x, int y, Consumer<Void> action) {
 		JButton button = new JButton(text);
-		button.setBounds(x, y, width, height);
-		button.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				action.accept(null);
-			}
-		});
+		button.setBounds(x, y, 200, 50);
+		button.addActionListener(e -> action.accept(null));
 		this.add(button);
 	}
 
@@ -246,10 +239,9 @@ public class MainFrame extends JFrame {
 	}
 
 	private void showTable(Void unused) {
-		int d = 0;
 		if (configuration.isKnockout()) {
 			String[] ops = {"Gruppe A", "Gruppe B", "Alle"};
-			d = JOptionPane.showOptionDialog(null, "Waehle Gruppe:", null, 0, JOptionPane.INFORMATION_MESSAGE, null, ops, null);
+			int d = JOptionPane.showOptionDialog(null, "Waehle Gruppe:", null, JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, ops, null);
 			if (d == 0) {
 				new TableFrame(groupphase, teams.subList(0, (teams.size() + 1) / 2), configuration.getTurnierName() + "_Gruppe_A", true);
 			} else if (d == 1) {

@@ -42,9 +42,9 @@ public class MatchplanFrame extends JFrame {
 			bw.write("Spielplan fuer " + configuration.getTurnierName());
 			bw.newLine();
 			bw.newLine();
-			bw.write("Startzeit: " + configuration.getStartTime().getHours() + ":" + configuration.getStartTime().getMinutes() + "Uhr");
+			bw.write("Startzeit: " + configuration.getStartTime() + " Uhr");
 			bw.newLine();
-			bw.write("Spielzeit: " + configuration.getGameTime().getMinutes() + "min    " + "Pause: " + configuration.getPauseTime().getMinutes() + "min");
+			bw.write("Spielzeit: " + configuration.getGameTime() + " Pause: " + configuration.getPauseTime());
 			bw.newLine();
 			bw.newLine();
 			for (Match match : matches) {

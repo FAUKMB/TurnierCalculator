@@ -1,15 +1,18 @@
 package turnier;
 
+import lombok.Getter;
+
+@Getter
 public class Time {
-	private int hours;
-	private int minutes;
-	private int seconds;
+	private final int hours;
+	private final int minutes;
+	private final int seconds;
 
 	public Time(int hours, int minutes, int seconds) {
 		this.hours = hours;
 		this.minutes = minutes;
 		this.seconds = seconds;
-		if (!isValid()) {
+		if (isInvalid()) {
 			throw new IllegalArgumentException("Invalid Time");
 		}
 	}
@@ -23,29 +26,22 @@ public class Time {
 		this.hours = Integer.parseInt(times[0]);
 		this.minutes = Integer.parseInt(times[1]);
 		this.seconds = Integer.parseInt(times[2]);
-		if (!isValid()) {
+		if (isInvalid()) {
 			throw new IllegalArgumentException("Invalid Time");
 		}
 	}
 
-	public int getHours() {
-		return hours;
+	private boolean isInvalid() {
+		return hours < 0 || hours >= 24 || minutes < 0 || minutes >= 60 || seconds < 0 || seconds >= 60;
 	}
 
-	public int getMinutes() {
-		return minutes;
-	}
-
-	public int getSeconds() {
-		return seconds;
-	}
-
-	public boolean isValid() {
-		return hours >= 0 && hours < 24 && minutes >= 0 && minutes < 60 && seconds >= 0 && seconds < 60;
+	public String toLog() {
+		return hours + ":" + minutes + ":" + seconds;
 	}
 
 	public String toString() {
-		return hours + ":" + minutes + ":" + seconds;
+		String format = "%02d:%02d:%02d";
+		return String.format(format, hours, minutes, seconds);
 	}
 
 

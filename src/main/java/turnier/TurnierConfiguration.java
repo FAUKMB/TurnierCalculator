@@ -43,6 +43,7 @@ public class TurnierConfiguration {
 		typeOptions.get(7).add(PLAYTYPE.DOUBLE_ROUND_ROBIN_SMALL_GROUP);
 
 		typeOptions.get(8).add(PLAYTYPE.KNOCKOUT);
+		typeOptions.get(8).add(PLAYTYPE.ROUND_ROBIN_TWO_GROUPS);
 
 		typeOptions.get(9).add(PLAYTYPE.KNOCKOUT);
 
@@ -79,7 +80,7 @@ public class TurnierConfiguration {
 	}
 
 	public void writeConfigToLog(BufferedWriter bufferedWriter) throws IOException {
-		String logstring = String.format(CONFIG_LOG_PATTERN, turnierName, numberOfFields, teams.size(), hasSemi, startTime, gameTime, pauseTime, playtype.name());
+		String logstring = String.format(CONFIG_LOG_PATTERN, turnierName, numberOfFields, teams.size(), hasSemi, startTime.toLog(), gameTime.toLog(), pauseTime.toLog(), playtype.name());
 		bufferedWriter.write(logstring);
 		bufferedWriter.newLine();
 		for (Team team : teams) {
@@ -112,7 +113,8 @@ public class TurnierConfiguration {
 		ROUND_ROBIN("Round Robin"),
 		DOUBLE_ROUND_ROBIN("Double Round Robin"),
 		DOUBLE_ROUND_ROBIN_SMALL_GROUP("Double Round Robin in Dreiergruppe"),
-		KNOCKOUT("Standard Groups with Knockout");
+		KNOCKOUT("Standard Groups with Knockout"),
+		ROUND_ROBIN_TWO_GROUPS("Round Robin ohne ko");
 		public final String type;
 
 		PLAYTYPE(String type) {
